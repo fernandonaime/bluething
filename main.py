@@ -53,6 +53,7 @@ def banner():
 
 username = "admin"
 password = "admin"
+count = 0
 def login():
     global count
     if count >= 3:
