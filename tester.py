@@ -111,7 +111,7 @@ def log_changes(changes, control):
         log_ufw.append(changes)
     elif control == "services":
         log_services.append(changes)
-    elif control == "passwords":
+    elif control == "pam":
         log_passwords.append(changes)
     elif control == "patching":
         log_patching.append(changes)
