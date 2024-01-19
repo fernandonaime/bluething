@@ -124,8 +124,8 @@ def log_category(control):
             log_file.write(f"-----------------------------------------------------------------------\n")
             log_file.write(f"                           UFW CONFIGURATIONS                          \n")
             log_file.write(f"-----------------------------------------------------------------------\n")
-            for lines in enumerate(log_ufw):
-                log_file_path.writelines(f"{str(lines)}\n")
+            for line in log_ufw:
+                log_file.write(f"{line}")
         elif control == "services":
             log_file.write(f"-----------------------------------------------------------------------\n")
             log_file.write(f"                           SERVICES CONFIGURATIONS                          \n")
