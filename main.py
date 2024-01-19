@@ -51,6 +51,25 @@ def banner():
     #\033[91m
     input("\n Press Enter to continue...")
 
+username = "admin"
+password = "admin"
+def login():
+    global count
+    if count >= 3:
+        print("Failed Attempts Reached")
+        return
+    user_log = input("Please Enter Username: ")
+    user_pass = input ("Please Enter Password: ")
+
+    if user_log == username:
+        if user_pass == password:
+            print("Welcome to the CIS Compliance Suite.")
+            main()
+        else:
+            print("That is the wrong password. Try Again")
+            count += 1
+            login()
+
 
 def clear_screen():
     time.sleep(1)
@@ -1554,29 +1573,29 @@ def ufw_scan():
         
     \033[91m|================ Scanning UFW on your system ================|\033[0m""")
         # Check if UFW is installed
-        # time.sleep(1)
+        time.sleep(1)
         if is_ufw_installed():
             print("UFW is installed.")
         else:
             print("\033[91m\U000026D4UFW is not installed.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(1)
         if is_iptables_persistent_installed():
             print("\033[91m\U000026D4Iptables-persistent packages are not removed.\U000026D4\033[0m")
         else:
             print("Iptables-persistent packages are removed.")
-        # time.sleep(1)
+        time.sleep(1)
         if is_ufw_enabled():
             print("UFW is enabled.")
         else:
             print("\033[91m\U000026D4UFW is not enabled.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(1)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         else:
             print("\033[91m\U000026D4Default deny policy is not configured.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(1)
         is_loopback_interface_configured()
-        # time.sleep(1)
+        time.sleep(1)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         is_ufw_outbound_connections_configured()
@@ -1595,24 +1614,24 @@ def ufw_scan():
 def ufw_configure():
     try:
         ensure_ufw_installed()
-        # time.sleep(1)
+        time.sleep(1)
         ensure_iptables_persistent_packages_removed()
-        # time.sleep(1)
+        time.sleep(1)
         enable_firewall_sequence()
-        # time.sleep(1)
+        time.sleep(1)
         # ensure_rules_on_ports_banner()
         script_path = 'ufwropnprts.sh'
         ensure_rules_on_ports(script_path)
-        # time.sleep(1)
+        time.sleep(1)
         ensure_default_deny_policy()
-        # time.sleep(1)
+        time.sleep(1)
         ensure_loopback_configured()
-        # time.sleep(1)
+        time.sleep(1)
         ensure_ufw_outbound_connections()
-        # time.sleep(1)
-        print("""
+        time.sleep(1)
+        #print("""
         
-    \033[91m|============= Firewall configurations Complete ==============|\033[0m""")
+    #\033[91m|============= Firewall configurations Complete ==============|\033[0m""")
 
     except FileNotFoundError:
         noufwbanner()
@@ -2140,106 +2159,109 @@ def services_scan():
     print("""
         
     \033[91m|============= Scanning Services on your system ==============|\033[0m""")
-    # time.sleep(1)
+    time.sleep(1)
     scan_xserver()
-    # time.sleep(1)
+    time.sleep(1)
     scan_avahi()
-    # time.sleep(1)
+    time.sleep(1)
     scan_dhcp()
-    # time.sleep(1)
+    time.sleep(1)
     scan_ldap()
-    # time.sleep(1)
+    time.sleep(1)
     scan_nfs()
-    # time.sleep(1)
+    time.sleep(1)
     scan_dns()
-    # time.sleep(1)
+    time.sleep(1)
     scan_vsftpd()
-    # time.sleep(1)
+    time.sleep(1)
     scan_http()
-    # time.sleep(1)
+    time.sleep(1)
     scan_imap_pop3()
-    # time.sleep(1)
+    time.sleep(1)
     scan_samba()
-    # time.sleep(1)
+    time.sleep(1)
     scan_squid()
-    # time.sleep(1)
+    time.sleep(1)
     scan_snmp()
-    # time.sleep(1)
+    time.sleep(1)
     scan_nis()
-    # time.sleep(1)
+    time.sleep(1)
     scan_dnsmasq()
-    # time.sleep(1)
+    time.sleep(1)
     scan_rsync()
-    # time.sleep(1)
+    time.sleep(1)
     scan_rsh()
-    # time.sleep(1)
+    time.sleep(1)
     scan_talk()
-    # time.sleep(1)
+    time.sleep(1)
     scan_telnet()
-    # time.sleep(1)
+    time.sleep(1)
     scan_ldap_utils()
-    # time.sleep(1)
+    time.sleep(1)
     scan_rpcbind()
-    # time.sleep(1)
+    time.sleep(1)
 
 
 def services_configure():
-    # time.sleep(1)
+    time.sleep(1)
     purge_xserver()
-    # time.sleep(1)
+    time.sleep(1)
     purge_avahi()
-    # time.sleep(1)
+    time.sleep(1)
     purge_dhcp()
-    # time.sleep(1)
+    time.sleep(1)
     purge_ldap()
-    # time.sleep(1)
+    time.sleep(1)
     purge_nfs()
-    # time.sleep(1)
+    time.sleep(1)
     purge_dns()
-    # time.sleep(1)
+    time.sleep(1)
     purge_vsftpd()
-    # time.sleep(1)
+    time.sleep(1)
     purge_http()
-    # time.sleep(1)
+    time.sleep(1)
     purge_imap_pop3()
-    # time.sleep(1)
+    time.sleep(1)
     purge_samba()
-    # time.sleep(1)
+    time.sleep(1)
     purge_squid()
-    # time.sleep(1)
+    time.sleep(1)
     purge_snmp()
-    # time.sleep(1)
+    time.sleep(1)
     purge_nis()
-    # time.sleep(1)
+    time.sleep(1)
     purge_dnsmasq()
-    # time.sleep(1)
+    time.sleep(1)
     purge_rsync()
-    # time.sleep(1)
+    time.sleep(1)
     purge_rsh()
-    # time.sleep(1)
+    time.sleep(1)
     purge_talk()
-    # time.sleep(1)
+    time.sleep(1)
     purge_telnet()
-    # time.sleep(1)
+    time.sleep(1)
     purge_ldap_utils()
-    # time.sleep(1)
+    time.sleep(1)
     purge_rpcbind()
-    # time.sleep(1)
+    time.sleep(1)
 
 
 def running_services_action():
     # runningservices_output_head()
-    # time.sleep(1)
+    time.sleep(1)
     check_non_services()
 
 
 def scan_running_services_action():
     # scan_runningservices_output_head()
-    # time.sleep(1)
+    time.sleep(1)
     check_non_services_scan()
 
 
 def services_purge_main():
+    print("""
+    
+        \033[91m|================ Configuring Services on your system ================|\033[0m""")
     services_configure()
     running_services_action()
 
@@ -2254,7 +2276,7 @@ def scan_all_benchmarks():
     ufw_scan()
     pam_scan()
     patches_scan()
-    # time.sleep(1)
+    time.sleep(1)
 
 
 def configure_all_benchmarks():
@@ -2267,11 +2289,11 @@ def configure_all_benchmarks():
     patches_configure()
     log_category("patches")
     time.sleep(1)
-    # time.sleep(1)
+    time.sleep(1)
 
 
 def home_banner():
-    #clear_screen()
+    clear_screen()
     choice = input("""
     |==\U0001F3E0======= CIS Compliance Suite ====================|
 
@@ -2371,28 +2393,28 @@ def configure_option():
                 if get_confirmation(f"\nYou have chosen {configure_type}. Are you sure?"):
                     if choice == "1":
                         configure_all_benchmarks()
-                        # clear_screen()
+                        clear_screen()
                         control_or_date_log()
                     elif choice == "2":
                         services_purge_main()
                         log_category("services")
-                        # clear_screen()
+                        clear_screen()
                         control_or_date_log()
                     elif choice == "3":
                         ufw_configure()
                         log_category("ufw")
-                        # clear_screen()
+                        clear_screen()
                         control_or_date_log()
                     elif choice == "4":
                         pam_configure()
                         log_category("pam")
                         time.sleep(1)
-                        # clear_screen()
+                        clear_screen()
                         control_or_date_log()
                     elif choice == "5":
                         patches_configure()
                         log_category("patches")
-                        # clear_screen()
+                        clear_screen()
                         control_or_date_log()
             elif choice.lower() == "e":
                 print("\nYou have exited the script :( \n")
@@ -2455,6 +2477,7 @@ def scan_option():
                     time.sleep(1)
                     home_main()
 
+
             elif choice.lower() == "e":
                 print("\nYou have exited the script :( \n")
                 exit()
@@ -2474,7 +2497,7 @@ def scan_option():
 def options_for_scanning_or_configuration(option):
     while True:
         try:
-            #clear_screen()
+            clear_screen()
             choice = input(f""" 
     \033[91m|================ Choose an option for {option} ==============|\033[0m
     1 - All Benchmarks
@@ -2513,6 +2536,7 @@ def get_confirmation(prompt):
 
 def main():
     try:
+        login()
         banner()
         log_setup()
         home_main()
