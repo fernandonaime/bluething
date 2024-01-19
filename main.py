@@ -56,20 +56,17 @@ password = "admin"
 count = 0
 def login():
     global count
-    if count >= 3:
-        print("Failed Attempts Reached")
-        return
     user_log = input("Please Enter Username: ")
     user_pass = input ("Please Enter Password: ")
 
     if user_log == username:
         if user_pass == password:
             print("Welcome to the CIS Compliance Suite.")
-            main()
+            return True
         else:
             print("That is the wrong password. Try Again")
             count += 1
-            login()
+            exit()
 
 
 def clear_screen():
@@ -2537,10 +2534,15 @@ def get_confirmation(prompt):
 
 def main():
     try:
-        login()
-        banner()
-        log_setup()
-        home_main()
+        if login() == True:
+            banner()
+            log_setup()
+            home_main()
+        else:
+            print("Error: Login Failed.")
+            exit()
+
+
     except KeyboardInterrupt:
         print("\n\nExited unexpectedly...")
         exit()
