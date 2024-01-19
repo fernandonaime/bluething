@@ -69,7 +69,7 @@ def login():
             exit()
 
 
-def clear_screen():
+#def clear_screen():
     time.sleep(1)
     os.system('clear')
 
@@ -2291,7 +2291,7 @@ def configure_all_benchmarks():
 
 
 def home_banner():
-    clear_screen()
+    #clear_screen()
     choice = input("""
     |==\U0001F3E0======= CIS Compliance Suite ====================|
 
@@ -2391,28 +2391,28 @@ def configure_option():
                 if get_confirmation(f"\nYou have chosen {configure_type}. Are you sure?"):
                     if choice == "1":
                         configure_all_benchmarks()
-                        clear_screen()
+                        #clear_screen()
                         control_or_date_log()
                     elif choice == "2":
                         services_purge_main()
                         log_category("services")
-                        clear_screen()
+                        #clear_screen()
                         control_or_date_log()
                     elif choice == "3":
                         ufw_configure()
                         log_category("ufw")
-                        clear_screen()
+                        #clear_screen()
                         control_or_date_log()
                     elif choice == "4":
                         pam_configure()
                         log_category("pam")
                         time.sleep(1)
-                        clear_screen()
+                        #clear_screen()
                         control_or_date_log()
                     elif choice == "5":
                         patches_configure()
                         log_category("patches")
-                        clear_screen()
+                        #clear_screen()
                         control_or_date_log()
             elif choice.lower() == "e":
                 print("\nYou have exited the script :( \n")
@@ -2495,7 +2495,7 @@ def scan_option():
 def options_for_scanning_or_configuration(option):
     while True:
         try:
-            clear_screen()
+            #clear_screen()
             choice = input(f""" 
     \033[91m|================ Choose an option for {option} ==============|\033[0m
     1 - All Benchmarks
