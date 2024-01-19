@@ -2431,20 +2431,20 @@ def scan_option():
     while True:
         try:
             choice = options_for_scanning_or_configuration("scan")
-            if choice.isdigit() and choice in ("1", "2", "3", "4", "5"):
+            if choice.isdigit() and choice in ("1", "2", "3", "4"):
                 scan_functions = {
                     "1": scan_all_benchmarks,
                     "2": services_scan_main,
                     "3": ufw_scan,
                     "4": pam_scan,
-                    "5": patches_scan
+                    #"5": patches_scan
                 }
                 scan_type = {
                     "1": "All Benchmarks",
                     "2": "Special Services",
                     "3": "Firewall",
                     "4": "Password Authentication Management",
-                    "5": "Patches & Updates"
+                    #"5": "Patches & Updates"
                 }[choice]
                 if get_confirmation(f"\nYou have chosen {scan_type}. Are you sure?"):
                     captured_result, captured_output = capture_function_output(scan_functions[choice])
