@@ -2271,7 +2271,7 @@ def configure_all_benchmarks():
 
 
 def home_banner():
-    clear_screen()
+    #clear_screen()
     choice = input("""
     |==\U0001F3E0======= CIS Compliance Suite ====================|
 
