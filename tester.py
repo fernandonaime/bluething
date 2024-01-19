@@ -12,7 +12,8 @@ from colorama import init as colorama_init
 
 
 def banner():
-    print("""\033[94m 
+    #\033[94m blue ansi
+    print("""
         |  ____  _              _______ _     _                |
         | |  _ \| |            |__   __| |   (_)               |
         | | |_) | |_   _  ___     | |  | |__  _ _ __   __ _    |
@@ -46,7 +47,8 @@ def banner():
     
     Authors: CB010695, CB010736, CB010830, CB010837   
     Version: 2.2.3
-    \033[91m""")
+    """)
+    #\033[91m
     input("\n Press Enter to continue...")
 
 
