@@ -197,7 +197,7 @@ def control_or_date_log():
 
         elif choice == 'n' or choice == 'no':
             print("No log generated")
-
+            input("Enter to continue")
             home_main()
             return True  # without this true the function will keep on doing configurations which is also a good thing.
         else:
