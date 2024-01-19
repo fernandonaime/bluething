@@ -2474,7 +2474,7 @@ def scan_option():
 def options_for_scanning_or_configuration(option):
     while True:
         try:
-            clear_screen()
+            #clear_screen()
             choice = input(f""" 
     \033[91m|================ Choose an option for {option} ==============|\033[0m
     1 - All Benchmarks
