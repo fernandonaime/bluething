@@ -1,19 +1,32 @@
 #!/usr/bin/python
 
 # he dos2unix tool works by converting the line endings in a text file from the Windows format to the Unix format.
-# 
-# Windows uses a pair of the carriage return and line feed characters (\r\n) to represent the end of a line in a text 
+#
+# Windows uses a pair of the carriage return and line feed characters (\r\n) to represent the end of a line in a text
 # file, while Unix and Linux systems use just the line feed character (\n).
-# 
-# When you create or edit a file on Windows and then try to use it on a Unix-based system like Linux, the extra \r 
-# characters can cause problems. The shell tries to interpret these \r characters as part of the command, which leads 
+#
+# When you create or edit a file on Windows and then try to use it on a Unix-based system like Linux, the extra \r
+# characters can cause problems. The shell tries to interpret these \r characters as part of the command, which leads
 # to errors like $'{\r': command not found.
-# 
-# The dos2unix tool solves this problem by removing the \r characters, leaving only the \n characters to represent line 
+#
+# The dos2unix tool solves this problem by removing the \r characters, leaving only the \n characters to represent line
 # endings. This makes the file compatible with Unix-based systems.
-# 
-# So, when you ran dos2unix on your script, it removed the \r characters that were causing the errors, allowing your 
+#
+# So, when you ran dos2unix on your script, it removed the \r characters that were causing the errors, allowing your
 # script to run correctly.
+
+
+
+# The warning “apt does not have a stable CLI interface. Use with caution in scripts.” is displayed when you use apt in
+# a script. This is because apt is designed as an end-user tool and its behavior may change between versions1.
+#
+# The apt command line interface is not considered stable, which means the developers might change how commands work,
+# rename commands, remove commands, or change the output of a command in future versions1. This could potentially break
+# scripts that rely on the current behavior of apt.
+#
+# For scripting purposes, it’s recommended to use apt-get or apt-cache instead, as they have stable command-line
+# interfaces1. These commands are designed to be used in scripts and will maintain backward compatibility as much as
+# possible1.
 import os
 import re
 import subprocess
@@ -1076,7 +1089,7 @@ def ensure_ufw_installed():
         var.lower()
 
         if var == 'y' or var == 'yes' or var == '':
-            os.system("apt install ufw")
+            os.system("apt install ufw > /dev/null 2>&1")
             line = "\nUFW INSTALLATION: ok"
             log_changes(line, "ufw")
             print("\n", line)
@@ -2561,3 +2574,4 @@ def main():
 main()
 
 # ============================================ End of Script ======================================
+
