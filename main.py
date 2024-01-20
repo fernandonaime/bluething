@@ -1185,25 +1185,25 @@ def enable_firewall_sequence():
             print(
                 "\nufw will flush its chains.This is good in maintaining a consistent state, but it may drop existing "
                 "connections (eg ssh)")
-            os.system("ufw allow proto tcp from any to any port 22")
+            os.system("ufw allow proto tcp from any to any port 22 > /dev/null 2>&1")
             # Run the following command to verify that the ufw daemon is enabled:
             print(" \nverifying that the ufw daemon is enabled:")
-            os.system("systemctl is-enabled ufw.service")
+            os.system("systemctl is-enabled ufw.service > /dev/null 2>&1")
             # following command to verify that the ufw daemon is active:
             print(" \nverifying that the ufw daemon is active:")
-            os.system("systemctl is-active ufw")
+            os.system("systemctl is-active ufw > /dev/null 2>&1")
             # Run the following command to verify ufw is active
             print(" \nverifying ufw is active:")
             os.system("ufw status")
             # following command to unmask the ufw daemon
             print("\nunmasking ufw daemon:")
-            os.system("systemctl unmask ufw.service")
+            os.system("systemctl unmask ufw.service > /dev/null 2>&1")
             # following command to enable and start the ufw daemon:
             print("\nenabling and starting the ufw daemon:")
-            os.system("systemctl --now enable ufw.service")
+            os.system("systemctl --now enable ufw.service > /dev/null 2>&1")
             # following command to enable ufw:
             print("\nEnabling the firewall...")
-            os.system("ufw enable")
+            os.system("ufw enable > /dev/null 2>&1")
             line = """\n
     UFW-ENABLING: ok, below commands were executed:
         ufw allow proto tcp from any to any port 22
@@ -2574,4 +2574,3 @@ def main():
 main()
 
 # ============================================ End of Script ======================================
-
