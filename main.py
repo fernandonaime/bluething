@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!usr/bin/python
 
 # he dos2unix tool works by converting the line endings in a text file from the Windows format to the Unix format.
 #
@@ -16,7 +16,7 @@
 # script to run correctly.
 
 
-
+import io
 # The warning “apt does not have a stable CLI interface. Use with caution in scripts.” is displayed when you use apt in
 # a script. This is because apt is designed as an end-user tool and its behavior may change between versions1.
 #
@@ -30,14 +30,14 @@
 import os
 import re
 import subprocess
-import time
-import io
 from contextlib import redirect_stdout
 from datetime import datetime
+from getpass import getpass
+
 from colorama import Fore
 from colorama import Style
 from colorama import init as colorama_init
-from getpass import getpass
+
 if not os.path.exists('logs'):
     os.makedirs('logs')
 username = "admin"
@@ -49,6 +49,7 @@ log_passwords = []
 log_patching = []
 current_date = ""
 current_datetime = ""
+
 
 def banner():
     # \033[94m blue ansi
@@ -62,8 +63,8 @@ def banner():
         |                                               __/|   |
         |                                              |___/   |
         
-            Welcome to the CIS Compliance Suite Script    
-        Authors: CB010695, CB010736, CB010830, CB010837   
+        Welcome to the CIS Compliance Suite for Ubuntu 20.04    
+          Authors: CB010695, CB010736, CB010830, CB010837   
                         Version: 2.2.3
     """)
     # Description:
@@ -89,8 +90,6 @@ def banner():
     input("\n Press Enter to continue...")
 
 
-
-
 def login():
     global count
     print("""
@@ -105,17 +104,16 @@ def login():
         print("That is the wrong username or password. Try Again")
         exit()
 
-
-# def clear_screen():
-    time.sleep(1)
-    os.system('clear')
+    # # def clear_screen():
+    # #time.sleep(1)
+    # os.system('clear')
 
 
 def y_n_choice():
     while True:
         try:
-            user_input = input("Enter 'yes' to continue or 'no' to skip: ")
-
+            user_input = input("""
+   Enter 'yes' to continue or 'no' to skip: """)
             if user_input is None:
                 print("Error: Result is None.")
                 return
@@ -131,9 +129,6 @@ def y_n_choice():
             print("Error:", ve)
         except AttributeError as ve:
             print("Error:", ve)
-
-
-
 
 
 def log_setup():
@@ -199,8 +194,7 @@ def log_category(control):
 def control_or_date_log():
     try:
         print("""
-    Do you want to log by date or by control?
-        """)
+    Do you want to generate a log report?""")
         choice = y_n_choice().lower()
         if choice == 'y' or choice == 'yes' or choice == '':
             choice = input("""
@@ -211,8 +205,9 @@ def control_or_date_log():
 
     Please enter the index of your choice: """)
             choice = int(choice)
+            flag = False
             if choice == 1:
-                output_filepath = f'logs/{current_date}.log'
+                output_filepath = f"logs/{current_date}.log"
                 with open(output_filepath, 'w') as output_file:
                     for lines in enumerate(log_ufw):
                         output_file.writelines(f"{str(lines)}\n")
@@ -222,6 +217,7 @@ def control_or_date_log():
                         output_file.writelines(f"{str(lines)}\n")
                     for lines in enumerate(log_patching):
                         output_file.writelines(f"{str(lines)}\n")
+                        flag = True
             elif choice == 2:
                 flag = False
                 log_mapping = {
@@ -231,24 +227,32 @@ def control_or_date_log():
                     "PATCHING CONFIGURATIONS": log_patching
                 }
                 for control, log_list in log_mapping.items():
-                    output_filepath = f'logs/{control}.log'
+                    output_filepath = f"logs/{control}.log"
                     with open(output_filepath, 'a') as output_file:
                         for lines in log_list:
                             output_file.writelines(f"{str(lines)}\n")
                     flag = True
-
-                if flag:
-                    print("Log generated successfully")
-                else:
-                    print("Log not generated")
             else:
                 print("Invalid choice. Please enter either 1 or 2.")
 
+            if flag:
+                print("\033[3mLog generated successfully\033[0m")
+                input("\n Press Enter to continue...")
+                os.system('clear')
+                home_main()
+            else:
+                print("\033[3mLog not generated\033[0m")
+                input("\n Press Enter to continue...")
+                os.system('clear')
+                home_main()
+
+
         elif choice == 'n' or choice == 'no':
             print("No log generated")
-            input("Enter to continue")
+            input("\n Press Enter to continue...")
+            os.system('clear')
             home_main()
-            return True  # without this true the function will keep on doing configurations which is also a good thing.
+            return True #without this true the function will keep on doing configurations which is also a good thing.
         else:
             print("Invalid choice. Please enter either 'yes' or 'no'.")
 
@@ -1097,7 +1101,8 @@ def ensure_ufw_installed():
             line = "\nUFW INSTALLATION: no"
             log_changes(line, "ufw")
             print("\n", line)
-            exit()
+            input("Exiting UFW controls... enter to continue to next configuration.")
+            return
         elif var is None:
             print("Error: Result is None.")
             return
@@ -1348,6 +1353,7 @@ def ensure_ufw_outbound_connections():
     Do you want to configure your ufw outbound connections if this set of rules are not in place 
     for new outbound connections all packets will be dropped by the default policy preventing network usage.,""")
     if not is_ufw_outbound_connections_configured():
+        print("\nAll outbound connections are not configured, do you want to configure them, ")
         var = y_n_choice()
         var.lower()
         if var == 'y' or var == 'yes' or var == '':
@@ -1499,7 +1505,6 @@ def input_port_number(script_path):
             print("Error:", ve)
 
 
-
 def ensure_rules_on_ports(script_path):
     print("""
     \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
@@ -1606,29 +1611,29 @@ def ufw_scan():
         
     \033[91m|================ Scanning UFW on your system ================|\033[0m""")
         # Check if UFW is installed
-        time.sleep(1)
+        #time.sleep(1)
         if is_ufw_installed():
             print("UFW is installed.")
         else:
             print("\033[91m\U000026D4UFW is not installed.\U000026D4\033[0m")
-        time.sleep(1)
+        #time.sleep(1)
         if is_iptables_persistent_installed():
             print("\033[91m\U000026D4Iptables-persistent packages are not removed.\U000026D4\033[0m")
         else:
             print("Iptables-persistent packages are removed.")
-        time.sleep(1)
+        #time.sleep(1)
         if is_ufw_enabled():
             print("UFW is enabled.")
         else:
             print("\033[91m\U000026D4UFW is not enabled.\U000026D4\033[0m")
-        time.sleep(1)
+        #time.sleep(1)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         else:
             print("\033[91m\U000026D4Default deny policy is not configured.\U000026D4\033[0m")
-        time.sleep(1)
+        #time.sleep(1)
         is_loopback_interface_configured()
-        time.sleep(1)
+        #time.sleep(1)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         is_ufw_outbound_connections_configured()
@@ -1647,21 +1652,21 @@ def ufw_scan():
 def ufw_configure():
     try:
         ensure_ufw_installed()
-        time.sleep(1)
+        #time.sleep(1)
         ensure_iptables_persistent_packages_removed()
-        time.sleep(1)
+        #time.sleep(1)
         enable_firewall_sequence()
-        time.sleep(1)
+        #time.sleep(1)
         # ensure_rules_on_ports_banner()
         script_path = 'ufwropnprts.sh'
         ensure_rules_on_ports(script_path)
-        time.sleep(1)
+        #time.sleep(1)
         ensure_default_deny_policy()
-        time.sleep(1)
+        #time.sleep(1)
         ensure_loopback_configured()
-        time.sleep(1)
+        #time.sleep(1)
         ensure_ufw_outbound_connections()
-        time.sleep(1)
+        #time.sleep(1)
         # print("""
 
     # \033[91m|============= Firewall configurations Complete ==============|\033[0m""")
@@ -1930,7 +1935,7 @@ def apply_pwhistory_config():
 def check_hashing_config():
     common_password_path = '/etc/pam.d/common-password'
     lines = read_file(common_password_path)
-    #sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pass sha512\n"
+    # sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pass sha512\n"
 
     sha512_present = any("pam_unix.so" in line and "sha512" in line for line in lines)
 
@@ -2074,28 +2079,28 @@ def pam_scan():
         package_name = 'libpam-pwquality'
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
         check_package_installed(package_name)
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Checking Current Password Requirements //***")
         check_pwquality_config()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Verifying if Password Checking Module is Enabled //***")
         check_common_password()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Checking if Password Lockout Policy is Enforced //***")
         check_faillock_config()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Configuring a Password Reuse Limit //***")
         check_pwhistory_config()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Verifying & Updating Password Hashing Algorithm //***")
         check_hashing_config()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Verifying & Updating Default Password Encryption Method //***")
         check_encrypt_method()
-        time.sleep(1)
+        #time.sleep(1)
         print("\n***// Auditing for Outdated Password Hashing Algorithms //***")
         check_users_hashing()
-        time.sleep(1)
+        #time.sleep(1)
 
     except ValueError as ve:
         print("Error:", ve)
@@ -2111,42 +2116,42 @@ def pam_configure():
 
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
         install_package()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Checking Current Password Requirements //***")
 
         apply_pwquality_config()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Verifying if Password Checking Module is Enabled //***")
 
         apply_common_password()
-        time.sleep(1)
+        #time.sleep(1)
 
         if not check_faillock_config():
             apply_faillock_config()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Configuring a Password Reuse Limit //***")
 
         apply_pwhistory_config()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Verifying & Updating Password Hashing Algorithm //***")
 
         apply_hashing_config()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Verifying & Updating Default Password Encryption Method //***")
 
         apply_encrypt_method()
-        time.sleep(1)
+        #time.sleep(1)
 
         print("\n***// Auditing for Outdated Password Hashing Algorithms //***")
 
         users_with_outdated_hashing = check_users_hashing()
         apply_hashing_changes(users_with_outdated_hashing)
-        time.sleep(1)
+        #time.sleep(1)
 
     # print("\n***// PAM Audit has been Completed Successfully! A copy of the audit results will be generated to a
     # .log file //***") line=("\n") report_file.close()
@@ -2193,102 +2198,102 @@ def services_scan():
     print("""
         
     \033[91m|============= Scanning Services on your system ==============|\033[0m""")
-    time.sleep(1)
+    #time.sleep(1)
     scan_xserver()
-    time.sleep(1)
+    #time.sleep(1)
     scan_avahi()
-    time.sleep(1)
+    #time.sleep(1)
     scan_dhcp()
-    time.sleep(1)
+    #time.sleep(1)
     scan_ldap()
-    time.sleep(1)
+    #time.sleep(1)
     scan_nfs()
-    time.sleep(1)
+    #time.sleep(1)
     scan_dns()
-    time.sleep(1)
+    #time.sleep(1)
     scan_vsftpd()
-    time.sleep(1)
+    #time.sleep(1)
     scan_http()
-    time.sleep(1)
+    #time.sleep(1)
     scan_imap_pop3()
-    time.sleep(1)
+    #time.sleep(1)
     scan_samba()
-    time.sleep(1)
+    #time.sleep(1)
     scan_squid()
-    time.sleep(1)
+    #time.sleep(1)
     scan_snmp()
-    time.sleep(1)
+    #time.sleep(1)
     scan_nis()
-    time.sleep(1)
+    #time.sleep(1)
     scan_dnsmasq()
-    time.sleep(1)
+    #time.sleep(1)
     scan_rsync()
-    time.sleep(1)
+    #time.sleep(1)
     scan_rsh()
-    time.sleep(1)
+    #time.sleep(1)
     scan_talk()
-    time.sleep(1)
+    #time.sleep(1)
     scan_telnet()
-    time.sleep(1)
+    #time.sleep(1)
     scan_ldap_utils()
-    time.sleep(1)
+    #time.sleep(1)
     scan_rpcbind()
-    time.sleep(1)
+    #time.sleep(1)
 
 
 def services_configure():
-    time.sleep(1)
+    #time.sleep(1)
     purge_xserver()
-    time.sleep(1)
+    #time.sleep(1)
     purge_avahi()
-    time.sleep(1)
+    #time.sleep(1)
     purge_dhcp()
-    time.sleep(1)
+    #time.sleep(1)
     purge_ldap()
-    time.sleep(1)
+    #time.sleep(1)
     purge_nfs()
-    time.sleep(1)
+    #time.sleep(1)
     purge_dns()
-    time.sleep(1)
+    #time.sleep(1)
     purge_vsftpd()
-    time.sleep(1)
+    #time.sleep(1)
     purge_http()
-    time.sleep(1)
+    #time.sleep(1)
     purge_imap_pop3()
-    time.sleep(1)
+    #time.sleep(1)
     purge_samba()
-    time.sleep(1)
+    #time.sleep(1)
     purge_squid()
-    time.sleep(1)
+    #time.sleep(1)
     purge_snmp()
-    time.sleep(1)
+    #time.sleep(1)
     purge_nis()
-    time.sleep(1)
+    #time.sleep(1)
     purge_dnsmasq()
-    time.sleep(1)
+    #time.sleep(1)
     purge_rsync()
-    time.sleep(1)
+    #time.sleep(1)
     purge_rsh()
-    time.sleep(1)
+    #time.sleep(1)
     purge_talk()
-    time.sleep(1)
+    #time.sleep(1)
     purge_telnet()
-    time.sleep(1)
+    #time.sleep(1)
     purge_ldap_utils()
-    time.sleep(1)
+    #time.sleep(1)
     purge_rpcbind()
-    time.sleep(1)
+    #time.sleep(1)
 
 
 def running_services_action():
     # runningservices_output_head()
-    time.sleep(1)
+    #time.sleep(1)
     check_non_services()
 
 
 def scan_running_services_action():
     # scan_runningservices_output_head()
-    time.sleep(1)
+    #time.sleep(1)
     check_non_services_scan()
 
 
@@ -2310,7 +2315,7 @@ def scan_all_benchmarks():
     ufw_scan()
     pam_scan()
     patches_scan()
-    time.sleep(1)
+    #time.sleep(1)
 
 
 def configure_all_benchmarks():
@@ -2322,27 +2327,21 @@ def configure_all_benchmarks():
     log_category("pam")
     patches_configure()
     log_category("patches")
-    time.sleep(1)
-    time.sleep(1)
+    #time.sleep(1)
+    #time.sleep(1)
 
 
 def home_banner():
-    # clear_screen()
     choice = input("""
-    |==\U0001F3E0======= CIS Compliance Suite ====================|
+    🏠======= \033[1mCIS Compliance Suite\033[0m ====================
 
-    Please choose one of the following options:
+    Please choose an option:
     1 - Scan for compliance.
     2 - Perform OS hardening.
     e - Exit.
-    
-    Enter your choice: """)
-    if choice.lower() == "e":
-        print("\nYou have exited the script :( \n")
-        exit()
 
-    else:
-        return choice
+    Enter your choice: """)
+    return choice.lower()
 
 
 def home_main():
@@ -2350,116 +2349,45 @@ def home_main():
         try:
             choice = home_banner()
             if choice == "1":
-                # if get_confirmation("\nYou have chosen System Scanning. Are you Sure?"):
                 scan_option()
-                return True
             elif choice == "2":
-                # if get_confirmation("\nYou have chosen to Configure the system. Are you Sure?"):
                 configure_option()
-                return True
-            elif choice.lower() == "e":
-                print("\nYou have exited the script :( \n")
+            elif choice == "e":
+                print("\nYou have exited the script.\n")
                 exit()
             else:
-                print(f"{Fore.RED}PLEASE ENTER A VALID INPUT.{Style.RESET_ALL}\n")
+                print("\033[91mPlease enter a valid input.\033[0m")
         except Exception as e:
             print("Error:", e)
 
 
-# def configure_option():
-#     while True:
-#         try:
-#             choice = options_for_scanning_or_configuration("configuration")
-#             if choice in ("1", "2", "3", "4", "5"):
-#                 configure_type = {
-#                     "1": "All Benchmarks",
-#                     "2": "Special Services",
-#                     "3": "Firewall",
-#                     "4": "Password Authentication Management",
-#                     "5": "Patches & Updates"
-#                 }[choice]
-#                 if get_confirmation(f"\nYou have chosen {configure_type}. Are you sure?"):
-#                     if choice == "1":
-#                         configure_all_benchmarks()
-#                         control_or_date_log()
-#                     elif choice == "2":
-#                         services_purge_main()
-#                         control_or_date_log()
-#                     elif choice == "3":
-#                         ufw_configure()
-#                         control_or_date_log()
-#                     elif choice == "4":
-#                         pam_configure()
-#                         control_or_date_log()
-#                     elif choice == "5":
-#                         patches_configure()
-#                         control_or_date_log()
-#                     elif choice.lower() == "b":
-#                         print("\nYou have canceled your action.\n")
-#                         return False
-#                     input("\nHit enter to continue to the home page: ")
-#                     home_main()
-#                     return True
-#                 else:
-#                     print("\nYou have canceled your action.\n")
-#                     return False
-#             elif choice.lower() == "e":
-#                 print("\nYou have exited the script :( \n")
-#                 return True
-#             else:
-#                 print(f"{Fore.RED}PLEASE ENTER A VALID INPUT.{Style.RESET_ALL}\n")
-#         except KeyboardInterrupt:
-#             print("\n\nExited unexpectedly...")
-#         except Exception as e:
-#             print("Error:", e)
 def configure_option():
     while True:
         try:
-            choice = options_for_scanning_or_configuration("configure")
-            if choice in ("1", "2", "3", "4", "5"):
-                configure_type = {
-                    "1": "All Benchmarks",
-                    "2": "Special Services",
-                    "3": "Firewall",
-                    "4": "Password Authentication Management",
-                    "5": "Patches & Updates"
-                }[choice]
-                print(f"\nYou have chosen {configure_type}")
-                if choice == "1":
-                    configure_all_benchmarks()
-                    # clear_screen()
-                    control_or_date_log()
-                elif choice == "2":
-                    services_purge_main()
-                    log_category("services")
-                    # clear_screen()
-                    control_or_date_log()
-                elif choice == "3":
-                    ufw_configure()
-                    log_category("ufw")
-                    # clear_screen()
-                    control_or_date_log()
-                elif choice == "4":
-                    pam_configure()
-                    log_category("pam")
-                    time.sleep(1)
-                    # clear_screen()
-                    control_or_date_log()
-                elif choice == "5":
-                    patches_configure()
-                    log_category("patches")
-                    # clear_screen()
-                    control_or_date_log()
-            elif choice.lower() == "e":
-                print("\nYou have exited the script :( \n")
-                exit()
-            elif choice.lower() == "b":
-                print("\nYou have canceled your action.\n")
-                home_main()
-                return
-            else:
-                print(
-                    f"{Fore.RED}PLEASE ENTER A VALID NUMBER, 'e' to exit, or 'b' to go back to the home page.{Style.RESET_ALL}\n")
+            choice = options_for_scanning_or_configuration("Configuration")
+            configure_type = {
+                "1": "All Benchmarks",
+                "2": "Special Services",
+                "3": "Firewall",
+                "4": "Password Authentication Management",
+                "5": "Patches & Updates"
+            }.get(choice, "")
+
+            if not configure_type:
+                print("\033[91mPlease enter a valid number, 'e' to exit, or 'b' to go back.\033[0m\n")
+                continue
+
+            print(f"\nYou have chosen {configure_type}")
+            configure_functions = {
+                "1": configure_all_benchmarks,
+                "2": services_purge_main,
+                "3": ufw_configure,
+                "4": pam_configure,
+                "5": patches_configure
+            }
+            configure_functions[choice]()
+            log_category(configure_type.lower())
+            control_or_date_log()
         except KeyboardInterrupt:
             print("\n\nExited unexpectedly...")
         except Exception as e:
@@ -2498,59 +2426,52 @@ def scan_option():
         "3": "Firewall",
         "4": "Password Authentication Management",
     }
+
     while True:
-        choice = options_for_scanning_or_configuration("scan")
-        if choice.isdigit() and choice in scan_functions.keys():
-            print(f"\nYou have chosen {scan_type[choice]}")
+        choice = options_for_scanning_or_configuration("Scanning")
+
+        if choice.isdigit() and choice in scan_functions:
+            print(f"\nYou have chosen {scan_type.get(choice, '')}")
             scan_functions[choice]()
-            print("Generating a copy of the scan results to a .log file. Please wait..")
+            print("\033[3mGenerating and saving scan results to 'logs/scan_log.log'. Please wait...\033[0m")
             captured_result, captured_output = capture_function_output(scan_functions[choice])
             scan_log(captured_output)
-            print("\nScan completed. Results saved in 'scan_log.log' in the 'logs' directory")
-            input("\nHit enter to continue to the home page: ")
+            print("\n\033[3mScan completed.\033[0m")
+            input("\n\033[5mHit enter to continue to the home page:\033[0m ")
+            # clear_screen()
+            os.system('clear')
             home_main()
-        elif choice.lower() == "e":
+        elif choice == "e":
             print("\nYou have exited the script :(\n")
             exit()
-        elif choice.lower() == "b":
+        elif choice == "b":
             print("\nYou have canceled your action.")
+            input("\n\033[5mHit enter to continue to the home page:\033[0m ")
+            # clear_screen()
+            os.system('clear')
             home_main()
             return
         else:
-            print("\nPLEASE ENTER A VALID NUMBER, 'e' to exit, or 'b' to go back to the home page.\n")
-
+            print("\n\033[91mPlease enter a valid number, 'e' to exit, or 'b' to go back.\033[0m\n")
 
 
 def options_for_scanning_or_configuration(option):
     while True:
-        print(f"\n\U0001F535 Choose an option to {option}")
-        choice = input("""
-        1 - All Benchmarks
-        2 - Special Services
-        3 - Firewall
-        4 - Password Authentication Management
-        5 - Patches & Updates
-        b - Go Back
-        e - Exit Scan
+        print(f"\n\U0001F535 \033[1m {option} Options: \033[0m")
+        choice = input(f"""
+    1 - All Benchmarks
+    2 - Special Services
+    3 - Firewall
+    4 - Password Authentication Management
+    5 - Patches & Updates
+    b - Go Back
+    e - Exit Scan
 
-        Please enter the number of the Scan you wish to conduct: """)
+    Enter the number of the {option} options: """)
         if choice.lower() in ("1", "2", "3", "4", "5", "b", "e"):
             return choice
         else:
             print("\n\U0001F534 Invalid input. Please enter 1, 2, 3, 4, 5, b, or e.\n")
-
-
-
-# def get_confirmation(prompt):
-#     while True:
-#         conf_choice = input(f"{prompt} (y/n): ").lower()
-#         if conf_choice == "y":
-#             return True
-#         elif conf_choice == "n":
-#             print("\nYou have canceled your action.\n")
-#             return False
-#         else:
-#             print("\nPLEASE ENTER A VALID INPUT\n")
 
 
 def main():
@@ -2560,16 +2481,14 @@ def main():
             log_setup()
             home_main()
         else:
-            print("Error: Login Failed.")
+            print("\033[91mError: Login Failed.\033[0m")
             exit()
-
 
     except KeyboardInterrupt:
         print("\n\nExited unexpectedly...")
         exit()
     except Exception as e:
         print("Error:", e)
-
 
 main()
 
