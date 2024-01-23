@@ -1453,7 +1453,7 @@ def purge_service(service_name):
             print(f"Uninstallation of {service_name}...\n")
             line = f"Uninstallation of {service_name}..."
             log_changes(line, "services")
-            os.system(f"apt purge {service_name}* > /dev/null 2>&1")
+            os.system(f"apt purge {service_name} > /dev/null 2>&1")
         else:
             print(f"{service_name} uninstallation bypassed.\n")
             line = f"{service_name} uninstallation bypassed.\n"
@@ -1464,7 +1464,7 @@ def purge_service(service_name):
         log_changes(line, "services")
 
 
-services_to_check = ["xserver-xorg", "avahi", "dhcp", "ldap", "nfs", "dns", "vsftpd", "apache2", "samba", "squid",
+services_to_check = ["xserver-xorg*", "avahi", "dhcp", "ldap", "nfs", "dns", "vsftpd", "apache2", "samba", "squid",
                      "snmpd", "nis", "rsync", "rsh-client", "talk", "telnet", "ldap-utils", "rpcbind", "dovecot-imapd",
                      "dovecot-pop3d", "dnsmasq-base"]
 
