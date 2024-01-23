@@ -54,7 +54,7 @@ def apt_upgrade(simulate=False):
         while True:
              policy_option = input("Do you want to view APT package policy? (y/n): ").lower()
              if policy_option in ['y', 'n']:
-                 break 
+                 break
              else:
                  print ("Invalid input. Please enter 'y' or 'n'.")
 
@@ -137,11 +137,11 @@ def check_etc_motd_for_patterns():
 #Check for patterns in /etc/issue
 def check_etc_issue_for_patterns():
 
-    try: 
+    try:
         #Get the value of the ID field from /etc/os-release
         os_release_id = subprocess.check_output(['grep', '^ID=', '/etc/os-release']).decode('utf-8').split('=')[1].strip().replace('"', '')
-   
-        #Construct the pattern 
+
+        #Construct the pattern
         pattern = re.compile(f"(\\\v|\\\r|\\\m|\\\s|{os_release_id})", re.IGNORECASE)
 
         #Search for the pattern in the content of /etc/issue
@@ -177,12 +177,12 @@ def check_etc_issue_for_patterns():
 #        with open('/etc/issue.net', 'r') as issue_net_file:
 #            for line in issue_net_file:
 #                if re.search(pattern, line, re.IGNORECASE):
-#                    print (line.strip()) 
+#                    print (line.strip())
 
 
 #    except FileNotFoundError:
 #        print ("Error: /etc/issue.net not found.")
-#    except subprocess.CalledProcessError as e: 
+#    except subprocess.CalledProcessError as e:
 #        print (f"Error running 'grep' command {e}")
 #    except Exception as e:
 #        print (f"Error: {e}")
@@ -238,7 +238,7 @@ def get_permissions_from_user():
 
     # Convert the choices to octal format
     octal_permissions = int(f"{owner_permission}{group_permission}{others_permission}", 8)
-    
+
     return octal_permissions
 
 
@@ -264,7 +264,7 @@ file_path = '/etc/motd'
 default_owner_uid = 1000  # Replace with your desired UID
 default_group_gid = 1000  # Replace with your desired GID
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the ownership
 change_owner_option = input("\nDo you want to change the ownership for owner? (y/n): ").lower()
 if change_owner_option == 'y':
@@ -274,7 +274,7 @@ else:
     new_owner_uid = default_owner_uid
     print (f"\nDefault owner UID chosen: {default_owner_uid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the group
 change_group_option = input("\nDo you want to change group? (y/n): ").lower()
 if change_group_option == 'y':
@@ -284,7 +284,7 @@ else:
     new_group_gid = default_group_gid
     print (f"\nDefault group GID chosen: {default_group_gid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change permissions
 change_permissions_input = input("\nDo you want to change the permissions /etc/motd file? (y/n): ").lower()
 if change_permissions_input == 'y':
@@ -342,7 +342,7 @@ def get_permissions_from_user():
 
     # Convert the choices to octal format
     octal_permissions = int(f"{owner_permission}{group_permission}{others_permission}", 8)
-    
+
     return octal_permissions
 
 def set_permissions_change_ownership_etc_issue(file_path, new_owner_uid, new_group_gid, new_permissions):
@@ -366,7 +366,7 @@ file_path = '/etc/issue'
 default_owner_uid = 1000  # Replace with your desired UID
 default_group_gid = 1000  # Replace with your desired GID
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the ownership
 change_owner_option = input("\nDo you want to change the ownership for owner? (y/n): ").lower()
 if change_owner_option == 'y':
@@ -376,7 +376,7 @@ else:
     new_owner_uid = default_owner_uid
     print (f"\nDefault owner UID chosen: {default_owner_uid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the group
 change_group_option = input("\nDo you want to change group? (y/n): ").lower()
 if change_group_option == 'y':
@@ -386,7 +386,7 @@ else:
     new_group_gid = default_group_gid
     print (f"\nDefault group GID chosen: {default_group_gid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change permissions
 change_permissions_input = input("\nDo you want to change the permissions /etc/issue file? (y/n): ").lower()
 if change_permissions_input == 'y':
@@ -412,9 +412,9 @@ def get_file_info_etc_issue_net(file_path):
        groupname = os.path.basename(os.path.expanduser('~'))
 
        report_file.write("Access: ({access_mode_octal}/{access_mode_human_read}) Uid: ({uid}/{username}) Gid: ({gid}/{groupname}) for /etc/issue/net\n")
-   
-    else: 
-       report_file.write("Nothing is returned\n") 
+
+    else:
+       report_file.write("Nothing is returned\n")
 
 file_path = '/etc/issue.net'
 result = get_file_info_etc_issue_net(file_path)
@@ -450,7 +450,7 @@ def get_permissions_from_user():
 
     # Convert the choices to octal format
     octal_permissions = int(f"{owner_permission}{group_permission}{others_permission}", 8)
-    
+
     return octal_permissions
 
 
@@ -478,7 +478,7 @@ file_path = '/etc/issue.net'
 default_owner_uid = 1000  # Replace with your desired UID
 default_group_gid = 1000  # Replace with your desired GID
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the ownership
 change_owner_option = input("\nDo you want to change the ownership for owner? (y/n): ").lower()
 if change_owner_option == 'y':
@@ -488,7 +488,7 @@ else:
     new_owner_uid = default_owner_uid
     print (f"\nDefault owner UID chosen: {default_owner_uid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change the group
 change_group_option = input("\nDo you want to change group? (y/n): ").lower()
 if change_group_option == 'y':
@@ -498,7 +498,7 @@ else:
     new_group_gid = default_group_gid
     print (f"\nDefault group GID chosen: {default_group_gid}")
 
-time.sleep(1)
+##time.sleep(1)
 # Ask the user if they want to change permissions
 change_permissions_input = input("\nDo you want to change the permissions /etc/issue/net file? (y/n): ").lower()
 if change_permissions_input == 'y':
@@ -512,7 +512,7 @@ else:
 
 
 
-if __name__ == "__patches__":
+def main():
     initial_head()
     time.sleep(2)
     check_etc_motd_for_patterns()
@@ -522,7 +522,5 @@ if __name__ == "__patches__":
     check_etc_issue_for_patterns()
     time.sleep(2)
     #check_etc_issue_net_for_patterns()
-
+main()
 report_file.close()
-
-
