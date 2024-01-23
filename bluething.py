@@ -320,7 +320,7 @@ def ensure_ufw_installed():
         var.lower()
 
         if var == 'y' or var == 'yes' or var == '':
-            os.system("apt install ufw")
+            os.system("apt-get install ufw")
             line = "\nUFW INSTALLATION: ok"
             log_changes(line, "ufw")
             print("\n", line)
