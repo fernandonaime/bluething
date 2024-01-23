@@ -320,7 +320,7 @@ def ensure_ufw_installed():
         var.lower()
 
         if var == 'y' or var == 'yes' or var == '':
-            os.system("apt install ufw > /dev/null 2>&1")
+            os.system("apt install ufw")
             line = "\nUFW INSTALLATION: ok"
             log_changes(line, "ufw")
             print("\n", line)
@@ -329,7 +329,7 @@ def ensure_ufw_installed():
             log_changes(line, "ufw")
             print("\n", line)
             input("\033[5mExiting UFW controls... enter to continue to next configuration.\033[0m")
-            return
+            return False
         elif var is None:
             print("Error: Result is None.")
             return
@@ -689,7 +689,7 @@ def get_validate_address_mask():
 
 
 def get_ports_as_a_list(script_path):
-    os.system('apt install dos2unix >/dev/null')
+    os.system('apt-get install dos2unix >/dev/null')
     os.system('dos2unix ' + script_path)
     result = subprocess.run(['bash', script_path], capture_output=True, text=True)
     if result.returncode == 0:
