@@ -245,8 +245,6 @@ def control_or_date_log():
                 input("\n\033[5m Press Enter to continue...\033[0m")
                 os.system('clear')
                 home_main()
-
-
         elif choice == 'n' or choice == 'no':
             print("No log generated")
             input("\n \033[5mHit Enter to continue...\033[0m")
@@ -874,8 +872,6 @@ def ufw_scan():
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         is_ufw_outbound_connections_configured()
-
-
     except FileNotFoundError:
         noufwbanner()
     except ValueError as ve:
@@ -1172,7 +1168,8 @@ def apply_pwhistory_config():
 def check_hashing_config():
     common_password_path = '/etc/pam.d/common-password'
     lines = read_file(common_password_path)
-    # sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pass sha512\n"
+# sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pas
+    # s sha512\n"
 
     sha512_present = any("pam_unix.so" in line and "sha512" in line for line in lines)
 
@@ -1191,7 +1188,8 @@ def check_hashing_config():
 def apply_hashing_config():
     common_password_path = '/etc/pam.d/common-password'
     lines = read_file(common_password_path)
-    sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pass sha512\n"
+    sha512_line = ("password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pa"
+                   "ss sha512\n")
 
     need_update = check_hashing_config()
     current_line_index = next((index for index, line in enumerate(lines) if "pam_unix.so" in line), None)
@@ -1543,41 +1541,6 @@ def home_main():
         except Exception as e:
             print("Error:", e)
 
-
-def configure_option():
-    while True:
-        try:
-            choice = options_for_scanning_or_configuration("Configuration")
-            configure_type = {
-                "1": "All Benchmarks",
-                "2": "Special Services",
-                "3": "Firewall",
-                "4": "Password Authentication Management",
-                "5": "Patches & Updates"
-            }.get(choice, "")
-
-            if not configure_type:
-                print("\033[91mPlease enter a valid number, 'e' to exit, or 'b' to go back.\033[0m\n")
-                continue
-
-            print(f"\nYou have chosen {configure_type}")
-            configure_functions = {
-                "1": configure_all_benchmarks,
-                "2": services_configure,
-                "3": ufw_configure,
-                "4": pam_configure,
-                "5": patches_configure
-            }
-            configure_functions[choice]()
-            log_category(configure_type.lower())
-            control_or_date_log()
-        except KeyboardInterrupt:
-            print("\n\nExited unexpectedly...")
-        except Exception as e:
-            print("Error:", e)
-
-
-#
 #
 def scan_log(prompt):
     output_filepath = f'logs/scan_log.log'
@@ -1595,6 +1558,51 @@ def capture_function_output(func):
 
     return result, printed_output
 
+def configure_option():
+    while True:
+        try:
+            choice = options_for_scanning_or_configuration("Configuration")
+            configure_type = {
+                "1": "All Benchmarks",
+                "2": "Special Services",
+                "3": "Firewall",
+                "4": "Password Authentication Management",
+                "5": "Patches & Updates"
+            }.get(choice, "")
+
+            # if not configure_type:
+            #     print("\033[91mPlease enter a valid number, 'e' to exit, or 'b' to go back.\033[0m\n")
+            #     continue
+
+            print(f"\nYou have chosen {configure_type}")
+            configure_functions = {
+                "1": configure_all_benchmarks,
+                "2": services_configure,
+                "3": ufw_configure,
+                "4": pam_configure,
+                "5": patches_configure
+            }
+            if choice.isdigit() and choice in configure_functions:
+                configure_functions[choice]()
+                log_category(configure_type.lower())
+                print("\n\033[3mConfiguration completed.\033[0m")
+                control_or_date_log()
+            elif choice == "e":
+                print("\nYou have exited the script :(\n")
+                exit()
+            elif choice == "b":
+                print("\nYou have canceled your action.")
+                input("\n\033[5mHit enter to continue to the home page:\033[0m ")
+                # clear_screen()
+                os.system('clear')
+                home_main()
+                return
+            else:
+                print("\n\033[91mPlease enter a valid number, 'e' to exit, or 'b' to go back.\033[0m\n")
+        except KeyboardInterrupt:
+            print("\n\nExited unexpectedly...")
+        except Exception as e:
+            print("Error:", e)
 
 def scan_option():
     scan_functions = {
