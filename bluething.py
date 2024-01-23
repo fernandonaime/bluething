@@ -288,7 +288,8 @@ def ask(name):
 # W  ================================ U F W  =========================== U F W  ============================ U F W
 # ================================
 def noufwbanner():
-    print("CIS recommends installing ufw; proceed with the installation in the configure section.")
+    print("""
+    CIS recommends installing ufw; proceed with the installation in the configure section.""")
     return
 
 
@@ -410,31 +411,38 @@ def enable_firewall_sequence():
     By default, `ufw` will prompt when enabling the firewall while running under SSH.
     """)
     if not is_ufw_enabled():
-        print("\nUFW is not enabled, do you want to enable it, ")
+        print("""
+        \nUFW is not enabled, do you want to enable it, """)
         var = y_n_choice()
         var.lower()
         if var == 'y' or var == 'yes' or var == '':
-            print(
-                "\nufw will flush its chains.This is good in maintaining a consistent state, but it may drop existing "
-                "connections (eg ssh)")
+            print("""
+    \nufw will flush its chains.This is good in maintaining a consistent state, but it may drop existing
+    connections (eg ssh)""")
             os.system("ufw allow proto tcp from any to any port 22 > /dev/null 2>&1")
             # Run the following command to verify that the ufw daemon is enabled:
-            print(" \nverifying that the ufw daemon is enabled:")
+            print("""
+    \nverifying that the ufw daemon is enabled:""")
             os.system("systemctl is-enabled ufw.service > /dev/null 2>&1")
             # following command to verify that the ufw daemon is active:
-            print(" \nverifying that the ufw daemon is active:")
+            print("""
+    \nverifying that the ufw daemon is active:""")
             os.system("systemctl is-active ufw > /dev/null 2>&1")
             # Run the following command to verify ufw is active
-            print(" \nverifying ufw is active:")
+            print("""
+    \nverifying ufw is active:""")
             os.system("ufw status")
             # following command to unmask the ufw daemon
-            print("\nunmasking ufw daemon:")
+            print("""
+    \nunmasking ufw daemon:""")
             os.system("systemctl unmask ufw.service > /dev/null 2>&1")
             # following command to enable and start the ufw daemon:
-            print("\nenabling and starting the ufw daemon:")
+            print("""
+    \nenabling and starting the ufw daemon:""")
             os.system("systemctl --now enable ufw.service > /dev/null 2>&1")
             # following command to enable ufw:
-            print("\nEnabling the firewall...")
+            print("""
+    \nEnabling the firewall...""")
             os.system("ufw enable > /dev/null 2>&1")
             line = """\n
     UFW-ENABLING: ok, below commands were executed:
@@ -449,14 +457,16 @@ def enable_firewall_sequence():
         elif var == 'n' or var == 'no':
             line = "\nUFW-ENABLING: no"
             log_changes(line, "ufw")
-            print("\nExiting UFW enabling mode... continuing to next configurations")
+            print("""
+\nExiting UFW enabling mode... continuing to next configurations""")
         elif var is None:
             print("Error: Result is None.")
             return
     else:
         line = "\nUFW-ENABLING: Pre-set"
         log_changes(line, "ufw")
-        print("\n", line)
+        print(""
+              "\n", line)
 
 
 def is_loopback_interface_configured():
