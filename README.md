@@ -12,7 +12,10 @@ Features
 
 Execution
 
-To execute the application, run the following command on the terminal with sudo priviledge:
+To execute the application, run the following command on the terminal with sudo privilege:
+
+bash
+
 python3 main.py
 
 Usage
