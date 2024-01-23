@@ -194,11 +194,10 @@ def log_category(control):
 def control_or_date_log():
     try:
         print("""
-    Do you want to generate a log report?""")
+    \033[3mFor the above configurations do you want a log by date or by control, hit no to skip\033[0m""")
         choice = y_n_choice().lower()
         if choice == 'y' or choice == 'yes' or choice == '':
             choice = input("""
-    \033[91m|======================== Log Options ========================|\033[0m
     Enter your choice as an integer:
     1) Log by date
     2) Log by control
