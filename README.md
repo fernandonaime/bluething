@@ -10,18 +10,15 @@ Features
     Automated software patching
     CLI warning banners
 
-Installation
+Execution
 
-To install the application, execute the following command:
-
-bash
-
+To execute the application, run the following command on the terminal with sudo priviledge:
 python3 main.py
 
 Usage
 
     Users interact with the application through the terminal or CLI.
-    For Ubuntu 20.04 workstations, a GUI prototype is available.
+    For Ubuntu 20.04 workstations, a GUI prototype is available and under testing.
 
 Dependencies
 
