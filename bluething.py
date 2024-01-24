@@ -30,6 +30,7 @@ import io
 import os
 import re
 import subprocess
+from textwrap import indent
 from contextlib import redirect_stdout
 from datetime import datetime
 from getpass import getpass
@@ -37,10 +38,13 @@ from getpass import getpass
 from colorama import Fore
 from colorama import Style
 from colorama import init as colorama_init
+from shlex import quote as shlex_quote
+from secrets import compare_digest
 
 if not os.path.exists('logs'):
     os.makedirs('logs')
 username = "admin"
+# noinspection HardcodedPassword
 password = "admin"
 count = 0
 log_ufw = []
@@ -53,7 +57,7 @@ current_datetime = ""
 
 def banner():
     # \033[94m blue ansi
-    print("""
+    print(indent("""
         |  ____  _              _______ _     _                |
         | |  _ \| |            |__   __| |   (_)               |
         | | |_) | |_   _  ___     | |  | |__  _ _ __   __ _    |
@@ -66,7 +70,7 @@ def banner():
         Welcome to the CIS Compliance Suite for Ubuntu 20.04    
           Authors: CB010695, CB010736, CB010830, CB010837   
                         Version: 2.2.3
-    """)
+    """, '    '))
     # Description:
     # This script is designed to help you ensure compliance with the
     # Center for Internet Security (CIS) benchmarks for
@@ -92,13 +96,13 @@ def banner():
 
 def login():
     global count
-    print("""
+    print(indent("""
     \033[91m|======================== Login ========================|\033[0m
-    """)
+    """, '    '))
     user_log = input("Username: ")
     user_pass = getpass("Password: ")
 
-    if user_log == username and user_pass == password:
+    if user_log == username and compare_digest(user_pass, password):
         return True
     else:
         print("That is the wrong username or password. Try Again")
@@ -112,8 +116,7 @@ def login():
 def y_n_choice():
     while True:
         try:
-            user_input = input("""
-   Enter 'yes' to continue or 'no' to skip: """)
+            user_input = input("Enter your choice (yes/no): ")
             if user_input is None:
                 print("Error: Result is None.")
                 return
@@ -193,9 +196,9 @@ def log_category(control):
 
 def control_or_date_log():
     try:
-        print("""
+        print(indent("""
     \033[91m|======================== Log Generation ========================|\033[0m
-    \033[3mFor the above configurations do you want a log by date or by control, hit no to skip\033[0m""")
+    \033[3mFor the above configurations do you want a log by date or by control, hit no to skip\033[0m""", '    '))
         choice = y_n_choice().lower()
         if choice == 'y' or choice == 'yes' or choice == '':
             choice = input("""
@@ -286,8 +289,8 @@ def ask(name):
 # W  ================================ U F W  =========================== U F W  ============================ U F W
 # ================================
 def noufwbanner():
-    print("""
-    CIS recommends installing ufw; proceed with the installation in the configure section.""")
+    print(indent("""
+    CIS recommends installing ufw; proceed with the installation in the configure section.""", '    '))
     return
 
 
@@ -299,7 +302,7 @@ def is_ufw_installed():
 
 
 def ensure_ufw_installed():
-    print("""
+    print(indent("""
 
     \033[91m|================= Installing Host Firewall ==================|\033[0m
 
@@ -310,7 +313,7 @@ def ensure_ufw_installed():
 
     Note: Only one firewall utility should be installed and configured. UFW is dependent on
     the iptables package.
-    """)
+    """, '    '))
 
     if not is_ufw_installed():
         var = input(
@@ -343,13 +346,13 @@ def is_iptables_persistent_installed():
 
 
 def ensure_iptables_persistent_packages_removed():
-    print("""
+    print(indent("""
 
     \033[91m|============== Removing IP-Persistent Tables ================|\033[0m
 
     Running both `ufw` and the services included in the `iptables-persistent` package may lead
     to conflicts.
-    """)
+    """, '    '))
     if is_iptables_persistent_installed():
         var = input("Do you want to remove the iptables-persistent packages? (yes/no):").lower()
         var.lower()
@@ -395,7 +398,7 @@ def is_ufw_enabled():
 
 
 def enable_firewall_sequence():
-    print("""
+    print(indent("""
 
     \033[91m|======================= Enabling UFW ========================|\033[0m
 
@@ -407,40 +410,40 @@ def enable_firewall_sequence():
     Please note that once `ufw` is 'enabled', it will not flush the chains when
     adding or removing rules (but will when modifying a rule or changing the default policy).
     By default, `ufw` will prompt when enabling the firewall while running under SSH.
-    """)
+    """, '    '))
     if not is_ufw_enabled():
-        print("""
-        \nUFW is not enabled, do you want to enable it, """)
+        print(indent("""
+        \nUFW is not enabled, do you want to enable it, """, '    '))
         var = y_n_choice()
         var.lower()
         if var == 'y' or var == 'yes' or var == '':
-            print("""
+            print(indent("""
     \nufw will flush its chains.This is good in maintaining a consistent state, but it may drop existing
-    connections (eg ssh)""")
+    connections (eg ssh)""", '    '))
             os.system("ufw allow proto tcp from any to any port 22 > /dev/null 2>&1")
             # Run the following command to verify that the ufw daemon is enabled:
-            print("""
-    \nverifying that the ufw daemon is enabled:""")
+            print(indent("""
+    \nverifying that the ufw daemon is enabled:""", '    '))
             os.system("systemctl is-enabled ufw.service > /dev/null 2>&1")
             # following command to verify that the ufw daemon is active:
-            print("""
-    \nverifying that the ufw daemon is active:""")
+            print(indent("""
+    \nverifying that the ufw daemon is active:""", '    '))
             os.system("systemctl is-active ufw > /dev/null 2>&1")
             # Run the following command to verify ufw is active
-            print("""
-    \nverifying ufw is active:""")
+            print(indent("""
+    \nverifying ufw is active:""", '    '))
             os.system("ufw status")
             # following command to unmask the ufw daemon
-            print("""
-    \nunmasking ufw daemon:""")
+            print(indent("""
+    \nunmasking ufw daemon:""", '    '))
             os.system("systemctl unmask ufw.service > /dev/null 2>&1")
             # following command to enable and start the ufw daemon:
-            print("""
-    \nenabling and starting the ufw daemon:""")
+            print(indent("""
+    \nenabling and starting the ufw daemon:""", '    '))
             os.system("systemctl --now enable ufw.service > /dev/null 2>&1")
             # following command to enable ufw:
-            print("""
-    \nEnabling the firewall...""")
+            print(indent("""
+    \nEnabling the firewall...""", '    '))
             os.system("ufw enable > /dev/null 2>&1")
             line = """\n
     UFW-ENABLING: ok, below commands were executed:
@@ -455,8 +458,8 @@ def enable_firewall_sequence():
         elif var == 'n' or var == 'no':
             line = "\nUFW-ENABLING: no"
             log_changes(line, "ufw")
-            print("""
-\nExiting UFW enabling mode... continuing to next configurations""")
+            print(indent("""
+\nExiting UFW enabling mode... continuing to next configurations""", '    '))
         elif var is None:
             print("Error: Result is None.")
             return
@@ -509,7 +512,7 @@ def is_loopback_interface_configured():
 
 def ensure_loopback_configured():
     try:
-        print("""
+        print(indent("""
 
     \033[91m|============ Configuring the Loopback Interface =============|\033[0m
 
@@ -517,7 +520,7 @@ def ensure_loopback_configured():
     the operation of the system. The loopback interface is the only place that loopback network
     (127.0.0.0/8 for IPv4 and ::1/128 for IPv6) traffic should be seen. All other interfaces
     should ignore traffic on this network as an anti-spoofing measure.
-    """)
+    """, '    '))
         if not is_loopback_interface_configured():
             print("\nAll loopback interfaces are not configured, do you want to configure them, ")
             var = y_n_choice()
@@ -578,7 +581,7 @@ def is_ufw_outbound_connections_configured():
 
 
 def ensure_ufw_outbound_connections():
-    print("""
+    print(indent("""
 
     \033[91m|========= Configuring UFW Outbound Connections ==========|\033[0m
 
@@ -586,7 +589,8 @@ def ensure_ufw_outbound_connections():
     default policy, preventing network usage.
 
     Do you want to configure your ufw outbound connections if this set of rules are not in place 
-    for new outbound connections all packets will be dropped by the default policy preventing network usage.,""")
+    for new outbound connections all packets will be dropped by the default policy preventing network 
+    usage.,""", '    '))
     if not is_ufw_outbound_connections_configured():
         print("\nAll outbound connections are not configured, do you want to configure them, ")
         var = y_n_choice()
@@ -697,9 +701,12 @@ def get_validate_address_mask():
 
 
 def get_ports_as_a_list(script_path):
-    os.system('apt-get install dos2unix >/dev/null')
-    os.system('dos2unix ' + script_path)
-    result = subprocess.run(['bash', script_path], capture_output=True, text=True)
+    # Ensure the script_path is a string
+    script_path = str(script_path)
+
+    # Use subprocess.run() instead of os.system()
+    result = subprocess.run(['dos2unix', script_path], capture_output=True, text=True)
+
     if result.returncode == 0:
         # If the script ran successfully, print the output
         # getting numbers from string
@@ -709,7 +716,6 @@ def get_ports_as_a_list(script_path):
         for i in range(0, len(ports_list)):
             print(i, ':', ports_list[i])
         return ports_list
-
     else:
         # If there was an error, print the error message
         print("Error:")
@@ -741,14 +747,14 @@ def input_port_number(script_path):
 
 
 def ensure_rules_on_ports(script_path):
-    print("""
+    print(indent("""
     \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
 
     To reduce the attack surface of a system, all services and ports should be blocked unless required.
     Your configuration will follow this format:
         ufw allow from 192.168.1.0/24 to any proto tcp port 443
 
-    Do you want to continue configuring firewall rules for a port [Y/n]: """)
+    Do you want to continue configuring firewall rules for a port [Y/n]: """, '    '))
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
         port_number = input_port_number(script_path)
@@ -759,7 +765,7 @@ def ensure_rules_on_ports(script_path):
         rule = ("ufw " + allow + " from " + netad + "/" + mask + " to any proto " + proto + " port " + str(port_number))
         line = ("\nPORT-RULES: \n: " + str(rule))
         log_changes(line, "ufw")
-        os.system(rule)
+        os.system(shlex_quote(rule))
         input("\n\033[5mHit enter to continue:\033[0m: ")
         ensure_rules_on_ports(script_path)
     elif var == 'n' or var == 'no':
@@ -780,12 +786,12 @@ def is_default_deny_policy():
 
 def ensure_default_deny_policy():
     try:
-        print("""
+        print(indent("""
 
     \033[91m|================= Default Port Deny Policy ==================|\033[0m
 
     Any port and protocol not explicitly allowed will be blocked.
-    Do you want to configure the default deny policy? [Y/n]: """)
+    Do you want to configure the default deny policy? [Y/n]: """, '    '))
         is_default_deny_policy()
         var = y_n_choice()
         var.lower()
@@ -842,9 +848,9 @@ def ensure_default_deny_policy():
 
 def ufw_scan():
     try:
-        print("""
+        print(indent("""
 
-    \033[91m|================ Scanning UFW on your system ================|\033[0m""")
+    \033[91m|================ Scanning UFW on your system ================|\033[0m""", '    '))
         # Check if UFW is installed
         # time.sleep(1)
         if is_ufw_installed():
@@ -900,7 +906,7 @@ def ufw_configure():
         # time.sleep(1)
         ensure_ufw_outbound_connections()
         # time.sleep(1)
-        # print("""
+        # print(indent("""
 
     # \033[91m|============= Firewall configurations Complete ==============|\033[0m""")
 
@@ -1168,7 +1174,7 @@ def apply_pwhistory_config():
 def check_hashing_config():
     common_password_path = '/etc/pam.d/common-password'
     lines = read_file(common_password_path)
-# sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pas
+    # sha512_line = "password        [success=1 default=ignore]      pam_unix.so obscure use_authtok try_first_pas
     # s sha512\n"
 
     sha512_present = any("pam_unix.so" in line and "sha512" in line for line in lines)
@@ -1307,9 +1313,9 @@ def apply_hashing_changes(users_without_sha512):
 
 def pam_scan():
     try:
-        print("""
+        print(indent("""
 
-    \033[91m|=============== Scanning PAM on your system ==============|\033[0m""")
+    \033[91m|=============== Scanning PAM on your system ==============|\033[0m""", '    '))
 
         package_name = 'libpam-pwquality'
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
@@ -1345,9 +1351,9 @@ def pam_scan():
 
 def pam_configure():
     try:
-        print("""
+        print(indent("""
 
-        \033[91m|================ Configuring PAM on your system ================|\033[0m""")
+        \033[91m|================ Configuring PAM on your system ================|\033[0m""", '    '))
 
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
         install_package()
@@ -1404,9 +1410,9 @@ def pam_configure():
 
 def patches_configure():
     try:
-        print("""
+        print(indent("""
 
-    \033[91m|====== Configuring Patches & Updates on your system =========|\033[0m""")
+    \033[91m|====== Configuring Patches & Updates on your system =========|\033[0m""", '    '))
         os.system('python3 patches.py')
 
     except ValueError as ve:
@@ -1417,9 +1423,9 @@ def patches_configure():
 
 def patches_scan():
     try:
-        print("""
+        print(indent("""
 
-    \033[91m|====== Scanning Patches & Updates on your system =========|\033[0m""")
+    \033[91m|====== Scanning Patches & Updates on your system =========|\033[0m""", '    '))
 
     except ValueError as ve:
         print("Error:", ve)
@@ -1472,9 +1478,9 @@ services_to_check = ["xserver-xorg*", "avahi", "dhcp", "ldap", "nfs", "dns", "vs
 # ============================================ Main Functions ======================================
 
 def services_scan():
-    print("""
+    print(indent("""
 
-    \033[91m|============= Scanning Services on your system ==============|\033[0m""")
+    \033[91m|============= Scanning Services on your system ==============|\033[0m""", '    '))
 
     for service in services_to_check:
         # check_service(service)
@@ -1483,8 +1489,8 @@ def services_scan():
 
 
 def services_configure():
-    print("""
-            \033[91m|================ Configuring Services on your system ================|\033[0m""")
+    print(indent("""
+            \033[91m|================ Configuring Services on your system ================|\033[0m""", '    '))
     for service in services_to_check:
         # check_service(service)
         # scan_service(service)
@@ -1541,6 +1547,7 @@ def home_main():
         except Exception as e:
             print("Error:", e)
 
+
 #
 def scan_log(prompt):
     output_filepath = f'logs/scan_log.log'
@@ -1557,6 +1564,7 @@ def capture_function_output(func):
     printed_output = output_variable.getvalue()
 
     return result, printed_output
+
 
 def configure_option():
     while True:
@@ -1604,6 +1612,7 @@ def configure_option():
         except Exception as e:
             print("Error:", e)
 
+
 def scan_option():
     scan_functions = {
         "1": scan_all_benchmarks,
@@ -1624,14 +1633,21 @@ def scan_option():
         if choice.isdigit() and choice in scan_functions:
             print(f"\nYou have chosen {scan_type.get(choice, '')}")
             scan_functions[choice]()
-            print("\033[3mGenerating and saving scan results to 'logs/scan_log.log'. Please wait...\033[0m")
-            captured_result, captured_output = capture_function_output(scan_functions[choice])
-            scan_log(captured_output)
-            print("\n\033[3mScan completed.\033[0m")
-            input("\n\033[5mHit enter to continue to the home page:\033[0m ")
-            # clear_screen()
-            os.system('clear')
-            home_main()
+            print("\n\033[3mDo you want a copy of the above compliance scan ?.\033[0m")
+            var = y_n_choice()
+            if var == 'y' or var == 'yes' or var == '':
+                print("\033[3mGenerating and saving scan results to 'logs/scan_log.log'. Please wait...\033[0m")
+                captured_result, captured_output = capture_function_output(scan_functions[choice])
+                scan_log(captured_output)
+                print("\n\033[3mScan completed.\033[0m")
+                input("\n\033[5mHit enter to continue to the home page:\033[0m ")
+                os.system('clear')
+                home_main()
+            elif var == 'n' or var == 'no':
+                print("\033[3mScan completed.\033[0m")
+                input("\n\033[5mHit enter to continue to the home page:\033[0m ")
+                os.system('clear')
+                home_main()
         elif choice == "e":
             print("\nYou have exited the script :(\n")
             exit()
