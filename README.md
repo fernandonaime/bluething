@@ -16,7 +16,7 @@ To execute the application, run the following command on the terminal with sudo 
 
 bash
 
-python3 main.py
+python3 bluething.py
 
 Usage
 
