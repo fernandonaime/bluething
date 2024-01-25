@@ -17,7 +17,7 @@ The **Debian 20.04 Compliance** application is designed to harden the Ubuntu 20.
 To execute the application, run the following command on the terminal with sudo privilege:
 
 ```bash
-python3 bluething.py
+sudo python3 bluething.py
 ```
 
 ## Usage
