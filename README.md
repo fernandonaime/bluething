@@ -57,7 +57,7 @@ For support or bug reporting, there are no specified channels at the moment.
 
 Special thanks to the following projects:
 
-- fernandonaime/debian20.04compliance
+- fernandonaime/cisufw20.04compliance
 - AvinashRa1/ccproject
 - shenalsw/script
 - Heshan316/CC-Assign2
