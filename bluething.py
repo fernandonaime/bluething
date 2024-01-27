@@ -30,16 +30,18 @@ import io
 import os
 import re
 import subprocess
-from textwrap import indent
+import time
+import stat
 from contextlib import redirect_stdout
 from datetime import datetime
 from getpass import getpass
+from secrets import compare_digest
+from shlex import quote as shlex_quote
+from textwrap import indent
 
 from colorama import Fore
 from colorama import Style
 from colorama import init as colorama_init
-from shlex import quote as shlex_quote
-from secrets import compare_digest
 
 if not os.path.exists('logs'):
     os.makedirs('logs')
@@ -1406,19 +1408,418 @@ def pam_configure():
 # ======================= Patches & Updates ================================================ Patches & Updates
 # ================================================ Patches & Updates ================================================
 # Patches & Updates ================================================ Patches & Updates =========================
+os.system('touch /etc/motd')
+os.system('touch /etc/issue')
+os.system('touch /etc/issue.net')
+file_path_etc_motd = '/etc/motd'
+file_path_etc_issue = '/etc/issue'
+file_path_etc_issue_net = '/etc/issue.net'
+def scan_system():
+    print("\nStarting System Scan...\n")
+    print("\n================ Starting System Scan  ===============\n")
 
+    # APT upgrade scan
+    apt_log_file = '/var/log/apt/history.log'
 
-def patches_configure():
+    # Check if APT upgrade has been completed
     try:
-        print(indent("""
+        print("\n=============== APT Upgrade Scan Starting ===============\n")
 
-    \033[91m|====== Configuring Patches & Updates on your system =========|\033[0m""", '    '))
-        os.system('python3 patches.py')
+        with open(apt_log_file, 'r') as file:
+            content = file.read()  # Corrected from file_read() to file.read()
+            if 'upgrade' in content:
+                print("\nAPT upgrade activities detected in the log files.\n")
+                line = "\n-APT upgrade activities detected in the log files.\n"
+                log_changes(line, "patches")
+            else:
+                print("\nNo recent APT upgrade activities detected.\n")
+                line = "\n-No recent APT upgrade activities detected.\n"
+                log_changes(line, "patches")
 
-    except ValueError as ve:
-        print("Error:", ve)
-    except TypeError as ve:
-        print("Error:", ve)
+    except FileNotFoundError:
+        print(f"\nError: Log file {apt_log_file} not found.\n")
+        line = f"\n-Error: Log file {apt_log_file} not found.\n"
+        log_changes(line, "patches")
+
+    print("\n=============== APT Upgrade Scan Completed ===============\n")
+
+    # Check Permissions for the specific files
+    print("\n=============== File Scan for Permissions Starting ===============\n")
+
+    for file_path in [file_path_etc_motd, file_path_etc_issue, file_path_etc_issue_net]:
+        if os.path.exists(file_path):
+            file_stat = os.stat(file_path)
+            access_mode = stat.filemode(file_stat.st_mode)
+            print(f"\nPermissions for {file_path}: {access_mode}")
+            line = f"\n-Permissions for {file_path}: {access_mode}\n"
+            log_changes(line, "patches")
+
+    print("\n=============== System Scan Completed. Exiting Script  ===============\n")
+
+
+def ask_user_scan():
+    while True:
+        print("\n=============== Scanning The APT Upgrades and Permissions ===============\n")
+        user_choice = input(
+            "\nDo you want to perform a scan only. If 'no' you will be able to perform configurations (y/n): ").lower()
+        if user_choice in ['yes', 'y']:
+            scan_system()
+            return True
+        elif user_choice in ['no', 'n']:
+            line = "\n=============== Scan Not Initiated ===============\n"
+            log_changes(line, "patches")
+            return False
+        else:
+            print("Invalid input. Please enter 'y' or 'n'.")
+
+
+def perform_apt_upgrade():
+    try:
+
+        subprocess.run(['sudo', 'apt', 'update'], check=True)
+        subprocess.run(['sudo', 'apt', 'upgrade', '-y'], check=True)
+        print("\nAPT upgrade completed successfully.\n")
+        line = "\n-APT upgrade completed successfully.\n"
+        log_changes(line, "patches")
+
+    except subprocess.CalledProcessError as e:
+        print(f"\nError occured during APT upgrade: {e}\n")
+        line = "\n-Error has occured during the completion of APT upgrade.\n"
+        log_changes(line, "patches")
+
+
+def simulate_apt_upgrade():
+    try:
+
+        subprocess.run(['sudo', 'apt', 'update'], check=True)
+        result = subprocess.run(['apt', '-s', 'upgrade'], check=True, capture_output=True, text=True)
+        print(result.stdout)
+        print("\nAPT simulation upgrade completed.\n")
+        line = "\n-APT simulation upgrade completed.\n"
+        log_changes(line, "patches")
+
+    except subprocess.CalledProcessError:
+        print(f"\nError occured during the simulation upgrade.\n")
+        line = "\n-Error has occured during the completion of simulation APT upgrade.\n"
+        log_changes(line, "patches")
+
+
+def run_apt_cache_policy():
+    try:
+        result = subprocess.run(['apt-cache', 'policy'], check=True, capture_output=True, text=True)
+        print(result.stdout)
+        print("\nAPT cache policy view completed\n")
+        line = "\n-APT cache policy view completed.\n"
+        log_changes(line, "patches")
+    except subprocess.CalledProcessError as e:
+        print(f"\nError has occurred when running 'apt-cache policy': {e}\n")
+        line = "\n-Error has occurred when running APT cache policy.\n"
+        log_changes(line, "patches")
+
+
+def run_apt_key_list():
+    try:
+        result = subprocess.run(['apt-key', 'list'], check=True, capture_output=True, text=True)
+        print(result.stdout)
+        print("\nGPG keys have been verified.\n")
+        line = "\n-APT key list view completed.\n"
+        log_changes(line, "patches")
+    except subprocess.CalledProcessError as e:
+        print(f"\nError has occurred when verifying 'apt-key list': {e}\n")
+        line = "\n-Error has occurred when verifying APT key list.\n"
+        log_changes(line, "patches")
+
+
+def apt_operation_options():
+    try:
+        print("\n")
+        print("\n=============== APT Upgrade Configuration ===============\n")
+
+        # Prompt the user for choosing between APT upgrade, APT simulation or neither
+        print("Please choose an option:\n")
+        print("1. Perform an APT upgrade\n")
+        print("2. Perform a simulation APT upgrade\n")
+        print("3. Choose neither\n")
+
+        while True:
+            choice = input("Enter your choice (1/2/3) : ").strip()
+            if choice in ['1', '2', '3']:
+                break
+
+            else:
+                print("\nInvalid input. Please choose between 1, 2 or 3.\n")
+
+        if choice == '1':
+            perform_apt_upgrade()
+        elif choice == '2':
+            simulate_apt_upgrade()
+        else:
+            print("\nNo APT operation chosen.\n")
+            line = "\n-No APT operation chosen from the following.\n"
+            log_changes(line, "patches")
+
+        while True:
+            print("\n")
+            print("\n=============== Viewing the APT Package Policy ===============\n")
+
+            policy_option = input("\nDo you want to view APT package policy? (y/n): ").lower()
+            if policy_option in ['y', 'n']:
+                break
+            else:
+                print("\nInvalid input. Please enter 'y' or 'n'.\n")
+
+        if policy_option == 'y':
+            run_apt_cache_policy()
+
+        elif policy_option == 'n':
+            print("\nAPT package policy not viewed.\n")
+            line = "\n-APT package policy not viewed.\n"
+            log_changes(line, "patches")
+
+        while True:
+            print("\n")
+            print("\n=============== Viewing APT Key List ===============\n")
+
+            key_option = input("\nDo you want to view APT key list? (y/n): ").lower()
+            if key_option in ['y', 'n']:
+                break
+            else:
+                print("\nInvalid input. Please enter 'y' or 'n'.\n")
+
+        if key_option == 'y':
+            run_apt_key_list()
+
+        elif key_option == 'n':
+            print("\nAPT key lists not viewed.\n")
+            line = "\n-APT key lists not viewed.\n"
+            log_changes(line, "patches")
+    except subprocess.CalledProcessError as e:
+        print(f"\nError occured during APT operation: {e}\n")
+
+
+def check_etc_motd_for_patterns():
+    try:
+        with open('/etc/motd', 'r') as motd_file:
+            motd_content = motd_file.read()
+
+            # Defining the pattern
+            pattern = '==== AUTHORISED USE ONLY. ALL ACTIVITY MAY BE MONITORED AND REPORTED ===='
+
+            # Search for the pattern in the motd content
+            match = re.search(pattern, motd_content)
+
+            if match:
+                print("\nMOTD Has Been Configured Already. Proceeding .....................!\n")
+            else:
+                print("\nRecommended MOTD Has Not Been Configured. Proceeding to Configure...\n")
+                os.system(
+                    'echo "==== AUTHORISED USE ONLY. ALL ACTIVITY MAY BE MONITORED AND REPORTED ====" > /etc/motd')
+                # print("\nMessage written to /etc/motd file.\n")
+                line = "\n-Message has been written to /etc/motd file.\n"
+                log_changes(line, "patches")
+    except FileNotFoundError:
+        print("Error: /etc/motd not found")
+    except Exception as e:
+        print(f"Error: {e}")
+        line = "\n-MOTD Error: {e}"
+        log_changes(line, "patches")
+
+    # Write the message to '/etc/issue.net'
+    message = "==== Authorized use only. All activity may be monitored and reported ====\n"
+
+    with open('/etc/issue.net', 'w') as file:
+        file.write(message)
+        line = "\n-Message written to /etc/issue.net.\n"
+        log_changes(line, "patches")
+
+    # Read the contents of '/etc/issue.net'
+    with open('/etc/issue.net', 'r') as file:
+        content = file.read()
+        print(content)
+
+
+# Check for patterns in /etc/issue
+def check_etc_issue_for_patterns():
+    try:
+        # Get the value of the ID field from /etc/os-release
+        os_release_id = subprocess.check_output(['grep', '^ID=', '/etc/os-release']).decode('utf-8').split('=')[
+            1].strip().replace('"', '')
+
+        # Construct the pattern
+        pattern = re.compile(f"(\\\v|\\\r|\\\m|\\\s|{os_release_id})", re.IGNORECASE)
+
+        # Search for the pattern in the content of /etc/issue
+        with open('/etc/issue', 'r') as issue_file:
+            issue_content = issue_file.read()
+            match = pattern.search(issue_content)
+
+            if match:
+                # print ("\nPattern found in /etc/issue. Proceeding to Modify...\n")
+                os.system('echo "Authorized use only. All activity may be monitored and reported." > /etc/issue')
+                line = "\n-Issue File has Been Modified. (/etc/issue)"
+                log_changes(line, "patches")
+            else:
+                print("")
+
+    except FileNotFoundError:
+        print(f"Error: /etc/issue not found.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running 'grep' command: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+# Check for patterns in /etc/issue.net
+# def check_etc_issue_net_for_patterns():
+#    try:
+# Get the value of the ID field from /etc/os-release
+#        os_release_id = subprocess.check_output(['grep', '^ID=', '/etc/os-release']).decode('utf-8').split('=')[1].
+#        strip().replace('"', '')
+
+# Construct the pattern
+#        pattern = re.compile(f"(\\\v|\\\r|\\\m|\\\s|{os_release_id})", re.IGNORECASE)
+
+# Open and read /etc/issue.net
+#        with open('/etc/issue.net', 'r') as issue_net_file:
+#            for line in issue_net_file:
+#                if re.search(pattern, line, re.IGNORECASE):
+#                    print (line.strip())
+
+
+#    except FileNotFoundError:
+#        print ("Error: /etc/issue.net not found.")
+#    except subprocess.CalledProcessError as e:
+#        print (f"Error running 'grep' command {e}")
+#    except Exception as e:
+#        print (f"Error: {e}")
+
+
+def get_file_info(file_path):
+    if os.path.exists(file_path):
+        file_stat = os.stat(file_path)
+        access_mode_octal = oct(file_stat.st_mode & 0o777)
+        access_mode_human = stat.filemode(file_stat.st_mode)
+        uid = file_stat.st_uid
+        gid = file_stat.st_gid
+        username_patches = os.path.basename(os.path.expanduser('~'))
+        groupname = os.path.basename(os.path.expanduser('~'))
+
+        line = (
+            f"\nAccess: ({access_mode_octal}/{access_mode_human}) Uid: ({uid}/{username_patches}) Gid: "
+            f"({gid})/{groupname}) for {file_path}\n")
+        print(line)
+        log_changes(line, "patches")
+    else:
+        line = f"\nNothing is returned for {file_path}\n"
+        print(line)
+        log_changes(line, "patches")
+
+
+# Assuming 'report_file' is defined somewhere in your code.
+
+file_paths_for_perm_change = [
+    '/etc/motd',
+    '/etc/issue',
+    '/etc/issue.net'
+]
+
+
+def main_get_file_info():
+    for file_path in file_paths_for_perm_change:
+        get_file_info(file_path)
+
+
+def get_permissions_from_user():
+    display_permission_options()
+    permissions = [get_permission_choice() for _ in range(3)]
+
+    permission_mapping = {
+        '1': '4',  # Read
+        '2': '2',  # Write
+        '3': '1',  # Execute
+        '4': '6',  # Read and Write
+        '5': '5',  # Read and Execute
+        '6': '3',  # Write and Execute
+        '7': '7',  # Read, Write and Execute
+    }
+
+    permissions_octal = [permission_mapping[p] for p in permissions]
+    octal_permissions = int(''.join(permissions_octal), 8)
+
+    return octal_permissions
+
+
+def display_permission_options():
+    print("\nPermission Options:")
+    print("1. Read")
+    print("2. Write")
+    print("3. Execute")
+    print("4. Read and Write")
+    print("5. Read and Execute")
+    print("6. Write and Execute")
+    print("7. Read, Write and Execute")
+
+
+def get_permission_choice():
+    while True:
+        choice = input("Choose permission option: ")
+        if choice in ['1', '2', '3', '4', '5', '6', '7']:
+            return choice
+        else:
+            print("Invalid option chosen. Please enter a number between 1 and 7.")
+
+
+def set_file_permissions(file_path, new_permissions):
+    try:
+        os.chmod(file_path, new_permissions)
+        print(f"\nPermissions for {file_path} set successfully.\n")
+    except OSError as e:
+        print(f"\nError occurred when setting up permissions for the file {file_path}: {e}\n")
+
+
+def ask_user_to_change_permissions(file_path, message):
+    time.sleep(1)
+    print("\n")
+    print(message)
+
+    while True:
+        change_permissions_input = input(f"\nDo you want to change permissions for {file_path}? (y/n): ").lower()
+        if change_permissions_input == 'y':
+            new_permissions = get_permissions_from_user()
+            print(f"\nPermissions for {file_path} changed to {oct(new_permissions)[2:]}\n")
+            set_file_permissions(file_path, new_permissions)
+            line = f"\n-Permissions for {file_path} changed successfully.\n"
+            break
+        elif change_permissions_input == 'n':
+            print(f"\nPermissions for {file_path} not changed.\n")
+            line = f"\n-Permissions for {file_path} not changed.\n"
+            break
+        else:
+            print("\nInvalid option chosen. Please enter 'y' or 'n'.\n")
+
+    return line
+
+
+def ask_user_to_change_permissions_etc_files():
+    file_paths_for_etc = [
+        {'path': '/etc/motd', 'message': "\n============== Configuring the etc motd file ===============\n"},
+        {'path': '/etc/issue', 'message': "\n=============== Configuring the etc issue file ===============\n"},
+        {'path': '/etc/issue.net', 'message': "\n=============== Configuring the etc issue net file ===============\n"}
+    ]
+
+    for file_info in file_paths_for_etc:
+        file_path = file_info['path']
+        message = file_info['message']
+        result = ask_user_to_change_permissions(file_path, message)
+        print(result)  # Or write to a report file
+
+
+def scan_choice():
+    if ask_user_scan():
+        return False  # Indicates not to continue with the rest of the code
+    else:
+        print("\nScan not initiated.\n")
+        return True  # Continue with the rest of the code
 
 
 def patches_scan():
@@ -1426,7 +1827,24 @@ def patches_scan():
         print(indent("""
 
     \033[91m|====== Scanning Patches & Updates on your system =========|\033[0m""", '    '))
+        main_get_file_info()
+        check_etc_motd_for_patterns()
+        check_etc_issue_for_patterns()
+        # check_etc_issue_net_for_patterns()
 
+    except ValueError as ve:
+        print("Error:", ve)
+    except TypeError as ve:
+        print("Error:", ve)
+
+
+def patches_configure():
+    try:
+        print(indent("""
+
+    \033[91m|====== Configuring Patches & Updates on your system =========|\033[0m""", '    '))
+        apt_operation_options()
+        ask_user_to_change_permissions_etc_files()
     except ValueError as ve:
         print("Error:", ve)
     except TypeError as ve:
@@ -1619,12 +2037,14 @@ def scan_option():
         "2": services_scan,
         "3": ufw_scan,
         "4": pam_scan,
+        "5": patches_scan
     }
     scan_type = {
         "1": "All Benchmarks",
         "2": "Special Services",
         "3": "Firewall",
         "4": "Password Authentication Management",
+        "5": "Patches & Updates"
     }
 
     while True:
