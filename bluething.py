@@ -162,7 +162,7 @@ def log_changes(changes, control):
         log_services.append(changes)
     elif control == "pam":
         log_passwords.append(changes)
-    elif control == "patching":
+    elif control == "patches":
         log_patching.append(changes)
 
 
@@ -188,11 +188,11 @@ def log_category(control):
             for line in log_passwords:
                 log_file.write(f"{line}")
 
-        elif control == "patching":
+        elif control == "patches":
             log_file.write(f"-----------------------------------------------------------------------\n")
             log_file.write(f"                           PATCHING CONFIGURATIONS                          \n")
             log_file.write(f"-----------------------------------------------------------------------\n")
-            for line in enumerate(log_patching):
+            for line in log_patching:
                 log_file.write(f"{line}")
 
 
@@ -2040,10 +2040,10 @@ def configure_option():
             choice = options_for_scanning_or_configuration("Configuration")
             configure_type = {
                 "1": "All Benchmarks",
-                "2": "Special Services",
-                "3": "Firewall",
-                "4": "Password Authentication Management",
-                "5": "Patches & Updates"
+                "2": "services",
+                "3": "ufw",
+                "4": "pam",
+                "5": "patches"
             }.get(choice, "")
 
             # if not configure_type:
