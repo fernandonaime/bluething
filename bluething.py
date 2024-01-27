@@ -1414,6 +1414,8 @@ os.system('touch /etc/issue.net')
 file_path_etc_motd = '/etc/motd'
 file_path_etc_issue = '/etc/issue'
 file_path_etc_issue_net = '/etc/issue.net'
+
+
 def scan_system():
     print("\nStarting System Scan...\n")
     print("\n================ Starting System Scan  ===============\n")
@@ -1597,6 +1599,22 @@ def apt_operation_options():
         print(f"\nError occured during APT operation: {e}\n")
 
 
+def scan_check_motd_for_patterns():
+    with open('/etc/motd', 'r') as motd_file:
+        motd_content = motd_file.read()
+
+        # Defining the pattern
+        pattern = '==== AUTHORISED USE ONLY. ALL ACTIVITY MAY BE MONITORED AND REPORTED ===='
+
+        # Search for the pattern in the motd content
+        match = re.search(pattern, motd_content)
+
+        if match:
+            print("\nMOTD Has Been Configured Already. Proceeding .....................!\n")
+        else:
+            print("\nRecommended MOTD Has Not Been Configured. Proceeding to Configure...\n")
+
+
 def check_etc_motd_for_patterns():
     try:
         with open('/etc/motd', 'r') as motd_file:
@@ -1616,6 +1634,7 @@ def check_etc_motd_for_patterns():
                     'echo "==== AUTHORISED USE ONLY. ALL ACTIVITY MAY BE MONITORED AND REPORTED ====" > /etc/motd')
                 # print("\nMessage written to /etc/motd file.\n")
                 line = "\n-Message has been written to /etc/motd file.\n"
+                print(line)
                 log_changes(line, "patches")
     except FileNotFoundError:
         print("Error: /etc/motd not found")
@@ -1638,6 +1657,33 @@ def check_etc_motd_for_patterns():
         print(content)
 
 
+def scan_check_etc_issue_for_patterns():
+    try:
+        # Get the value of the ID field from /etc/os-release
+        os_release_id = subprocess.check_output(['grep', '^ID=', '/etc/os-release']).decode('utf-8').split('=')[
+            1].strip().replace('"', '')
+
+        # Construct the pattern
+        pattern = re.compile(f"(\\\v|\\\r|\\\m|\\\s|{os_release_id})", re.IGNORECASE)
+
+        # Search for the pattern in the content of /etc/issue
+        with open('/etc/issue', 'r') as issue_file:
+            issue_content = issue_file.read()
+            match = pattern.search(issue_content)
+
+            if match:
+                print("\nPattern found in /etc/issue. Proceeding to Modify...\n")
+            else:
+                print("pattern not found in /etc/issue.")
+
+    except FileNotFoundError:
+        print(f"Error: /etc/issue not found.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error running 'grep' command: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 # Check for patterns in /etc/issue
 def check_etc_issue_for_patterns():
     try:
@@ -1654,7 +1700,7 @@ def check_etc_issue_for_patterns():
             match = pattern.search(issue_content)
 
             if match:
-                # print ("\nPattern found in /etc/issue. Proceeding to Modify...\n")
+                print("\nPattern found in /etc/issue. Proceeding to Modify...\n")
                 os.system('echo "Authorized use only. All activity may be monitored and reported." > /etc/issue')
                 line = "\n-Issue File has Been Modified. (/etc/issue)"
                 log_changes(line, "patches")
@@ -1731,6 +1777,7 @@ def main_get_file_info():
 
 def get_permissions_from_user():
     display_permission_options()
+    print("giving permissions to the owner, group and others in order")
     permissions = [get_permission_choice() for _ in range(3)]
 
     permission_mapping = {
@@ -1827,9 +1874,10 @@ def patches_scan():
         print(indent("""
 
     \033[91m|====== Scanning Patches & Updates on your system =========|\033[0m""", '    '))
-        main_get_file_info()
-        check_etc_motd_for_patterns()
-        check_etc_issue_for_patterns()
+        scan_system()
+        # main_get_file_info()
+        # scan_check_motd_for_patterns()
+        # scan_check_etc_issue_for_patterns()
         # check_etc_issue_net_for_patterns()
 
     except ValueError as ve:
@@ -1844,6 +1892,8 @@ def patches_configure():
 
     \033[91m|====== Configuring Patches & Updates on your system =========|\033[0m""", '    '))
         apt_operation_options()
+        check_etc_motd_for_patterns()
+        check_etc_issue_for_patterns()
         ask_user_to_change_permissions_etc_files()
     except ValueError as ve:
         print("Error:", ve)
