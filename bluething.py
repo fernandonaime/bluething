@@ -1397,8 +1397,6 @@ def scan_system():
         log_changes(line, "patches")
     time.sleep(1)
     print("\n=============== APT Upgrade Scan Completed ===============\n")
-    simulate_apt_upgrade()
-    time.sleep(1)
     # Check Permissions for the specific files
     print("\n=============== File Scan for Permissions Starting ===============\n")
 
