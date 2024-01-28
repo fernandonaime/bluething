@@ -1395,7 +1395,7 @@ def scan_system():
         log_changes(line, "patches")
     time.sleep(1)
     # Check Permissions for the specific files
-    print("\n=============== File Scan for Permissions===============\n")
+    print("\n=============== File Scan for Permissions ===============\n")
 
     for file_path in [file_path_etc_motd, file_path_etc_issue, file_path_etc_issue_net]:
         if os.path.exists(file_path):
