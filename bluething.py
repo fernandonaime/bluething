@@ -1878,7 +1878,7 @@ def services_scan():
 
     for service in services_to_check:
         # check_service(service)
-        time.sleep(1)
+        time.sleep(0.5)
         scan_service(service)
         # purge_service(service)
 
@@ -1898,7 +1898,7 @@ def scan_all_benchmarks():
     ufw_scan()
     pam_scan()
     patches_scan()
-    time.sleep(0.5)
+    time.sleep(1)
 
 
 def configure_all_benchmarks():
