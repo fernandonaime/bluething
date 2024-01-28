@@ -701,7 +701,7 @@ def input_port_number(script_path):
 
 def ensure_rules_on_ports(script_path):
     print("""
-    \033[91m|====== Configuring Firewall Rules for All Open Ports ==========|\033[0m
+    |========= Configuring Firewall Rules for Ports ==========|
 
     To reduce the attack surface of a system, 
     all services and ports should be blocked unless required.
