@@ -1368,10 +1368,8 @@ file_path_etc_issue_net = '/etc/issue.net'
 
 
 def scan_system():
-    print("\n=============== System Scan Starting ===============\n")
     # APT upgrade scan
     apt_log_file = '/var/log/apt/history.log'
-
     # Check if APT upgrade has been completed
     try:
         print("\n=============== APT Upgrade Scan ===============\n")
@@ -1405,9 +1403,6 @@ def scan_system():
             print(f"\nPermissions for {file_path}: {access_mode}")
             line = f"\n-Permissions for {file_path}: {access_mode}\n"
             log_changes(line, "patches")
-
-    print("\n=============== System Scan Completed===============\n")
-
 
 def ask_user_scan():
     while True:
