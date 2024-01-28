@@ -1,5 +1,4 @@
 #!usr/bin/python
-
 import io
 import os
 import re
@@ -15,6 +14,8 @@ from textwrap import indent
 from colorama import Fore
 from colorama import Style
 from colorama import init as colorama_init
+
+# Variable Declaration and Initialization
 if not os.path.exists('logs'):
     os.makedirs('logs')
 username = "admin"
