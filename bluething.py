@@ -747,7 +747,8 @@ def ensure_default_deny_policy():
     |================= Default Port Deny Policy ==================|
 
     Any port and protocol not explicitly allowed will be blocked.
-    Do you want to configure the default deny policy? [Y/n]: """, '    '))
+    Do you want to configure the default deny policy? [Y/n]: 
+    """, '    '))
         is_default_deny_policy()
         var = y_n_choice()
         var.lower()
