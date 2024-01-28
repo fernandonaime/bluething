@@ -11,6 +11,7 @@ The **Debian 20.04 Compliance** application is designed to harden the Ubuntu 20.
 - Strengthening of PAM configurations
 - Automated software patching
 - CLI warning banners
+- Software Upgrades & Patch management
 
 ## Execution
 
