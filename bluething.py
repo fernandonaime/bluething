@@ -846,6 +846,7 @@ def ufw_configure():
     try:
         print(indent("""
     \033[91m|=================== Configuring UFW Firewall Compliance ===================|\033[0m""", '    '))
+        
         ensure_ufw_installed()
         time.sleep(1)
         ensure_iptables_persistent_packages_removed()
