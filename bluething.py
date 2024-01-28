@@ -803,29 +803,29 @@ def ufw_scan():
 
     |================ Scanning UFW on your system ================|""", '    '))
         # Check if UFW is installed
-        # time.sleep(1)
+        time.sleep(0.5)
         if is_ufw_installed():
             print("UFW is installed.")
         else:
             print("\033[91m\U000026D4UFW is not installed.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(0.5)
         if is_iptables_persistent_installed():
             print("\033[91m\U000026D4Iptables-persistent packages are not removed.\U000026D4\033[0m")
         else:
             print("Iptables-persistent packages are removed.")
-        # time.sleep(1)
+        time.sleep(0.5)
         if is_ufw_enabled():
             print("UFW is enabled.")
         else:
             print("\033[91m\U000026D4UFW is not enabled.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(0.5)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         else:
             print("\033[91m\U000026D4Default deny policy is not configured.\U000026D4\033[0m")
-        # time.sleep(1)
+        time.sleep(0.5)
         is_loopback_interface_configured()
-        # time.sleep(1)
+        time.sleep(0.5)
         if is_default_deny_policy():
             print("Default deny policy is configured.")
         is_ufw_outbound_connections_configured()
@@ -844,21 +844,21 @@ def ufw_configure():
         print(indent("""
     \033[91m|=================== Configuring UFW Firewall Compliance ===================|\033[0m""", '    '))
         ensure_ufw_installed()
-        # time.sleep(1)
+        time.sleep(0.5)
         ensure_iptables_persistent_packages_removed()
-        # time.sleep(1)
+        time.sleep(0.5)
         enable_firewall_sequence()
-        # time.sleep(1)
+        time.sleep(0.5)
         # ensure_rules_on_ports_banner()
         script_path = 'ufwropnprts.sh'
         ensure_rules_on_ports(script_path)
-        # time.sleep(1)
+        time.sleep(0.5)
         ensure_default_deny_policy()
-        # time.sleep(1)
+        time.sleep(0.5)
         ensure_loopback_configured()
-        # time.sleep(1)
+        time.sleep(0.5)
         ensure_ufw_outbound_connections()
-        # time.sleep(1)
+        time.sleep(0.5)
         # print(indent("""
 
     # \033[91m|============= Firewall configurations Complete ==============|\033[0m""")
@@ -1273,28 +1273,28 @@ def pam_scan():
         package_name = 'libpam-pwquality'
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
         check_package_installed(package_name)
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Checking Current Password Requirements //***")
         check_pwquality_config()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Verifying if Password Checking Module is Enabled //***")
         check_common_password()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Checking if Password Lockout Policy is Enforced //***")
         check_faillock_config()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Configuring a Password Reuse Limit //***")
         check_pwhistory_config()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Verifying & Updating Password Hashing Algorithm //***")
         check_hashing_config()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Verifying & Updating Default Password Encryption Method //***")
         check_encrypt_method()
-        # time.sleep(1)
+        time.sleep(0.5)
         print("\n***// Auditing for Outdated Password Hashing Algorithms //***")
         check_users_hashing()
-        # time.sleep(1)
+        time.sleep(0.5)
 
     except ValueError as ve:
         print("Error:", ve)
@@ -1310,42 +1310,42 @@ def pam_configure():
 
         print("\n***// Verifying if libpam-pwquality Package is Installed //***")
         install_package()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Checking Current Password Requirements //***")
 
         apply_pwquality_config()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Verifying if Password Checking Module is Enabled //***")
 
         apply_common_password()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         if not check_faillock_config():
             apply_faillock_config()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Configuring a Password Reuse Limit //***")
 
         apply_pwhistory_config()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Verifying & Updating Password Hashing Algorithm //***")
 
         apply_hashing_config()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Verifying & Updating Default Password Encryption Method //***")
 
         apply_encrypt_method()
-        # time.sleep(1)
+        time.sleep(0.5)
 
         print("\n***// Auditing for Outdated Password Hashing Algorithms //***")
 
         users_with_outdated_hashing = check_users_hashing()
         apply_hashing_changes(users_with_outdated_hashing)
-        # time.sleep(1)
+        time.sleep(0.5)
 
     # print("\n***// PAM Audit has been Completed Successfully! A copy of the audit results will be generated to a
     # .log file //***") line=("\n") report_file.close()
@@ -1894,7 +1894,7 @@ def scan_all_benchmarks():
     ufw_scan()
     pam_scan()
     patches_scan()
-    # time.sleep(1)
+    time.sleep(0.5)
 
 
 def configure_all_benchmarks():
@@ -1906,8 +1906,8 @@ def configure_all_benchmarks():
     log_category("pam")
     patches_configure()
     log_category("patches")
-    # time.sleep(1)
-    # time.sleep(1)
+    time.sleep(0.5)
+    time.sleep(0.5)
 
 
 def home_banner():
