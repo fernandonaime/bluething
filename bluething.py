@@ -359,8 +359,7 @@ def enable_firewall_sequence():
     When running `ufw enable` or starting `ufw` via its initscript, `ufw` will flush its chains.
     This is required so `ufw` can maintain a consistent state, but it may drop existing
     connections (e.g., SSH). `ufw` does support adding rules before enabling the firewall.
-    The rules will still be flushed, but the SSH port will be open after enabling the
-    firewall.
+    The rules will still be flushed, but the SSH port will be open after enabling the firewall.
     Please note that once `ufw` is 'enabled', it will not flush the chains when
     adding or removing rules (but will when modifying a rule or changing the default policy).
     By default, `ufw` will prompt when enabling the firewall while running under SSH.
@@ -706,7 +705,7 @@ def ensure_rules_on_ports(script_path):
     To reduce the attack surface of a system, 
     all services and ports should be blocked unless required.
     Your configuration will follow this format:
-    \x1B[3mufw allow from 192.168.1.0/24 to any proto tcp port 443 \x1B[0m
+    \x1B[3m ufw allow from 192.168.1.0/24 to any proto tcp port 443 \x1B[0m
     Do you want to continue configuring firewall rules for a port [Y/n]: """)
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
