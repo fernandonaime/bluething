@@ -699,14 +699,14 @@ def input_port_number(script_path):
 
 
 def ensure_rules_on_ports(script_path):
-    print("""
+    print(indent("""
     |========= Configuring Firewall Rules for Ports ==========|
 
     To reduce the attack surface of a system, 
     all services and ports should be blocked unless required.
     Your configuration will follow this format:
     \x1B[3m ufw allow from 192.168.1.0/24 to any proto tcp port 443 \x1B[0m
-    Do you want to continue configuring firewall rules for a port [Y/n]: """)
+    Do you want to continue configuring firewall rules for a port [Y/n]: """, '    '))
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
         port_number = input_port_number(script_path)
@@ -846,7 +846,7 @@ def ufw_configure():
     try:
         print(indent("""
     \033[91m|=================== Configuring UFW Firewall Compliance ===================|\033[0m""", '    '))
-        
+
         ensure_ufw_installed()
         time.sleep(1)
         ensure_iptables_persistent_packages_removed()
