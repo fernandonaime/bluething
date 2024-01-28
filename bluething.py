@@ -2071,7 +2071,7 @@ def configure_option():
                 print("\nYou have exited the script :(\n")
                 exit()
             elif choice == "b":
-                print("\nYou have canceled your action.")
+                # print("\nYou have canceled your action.")
                 input("\n\033[5mHit enter to continue to the home page:\033[0m ")
                 # clear_screen()
                 os.system('clear')
@@ -2126,7 +2126,7 @@ def scan_option():
             print("\nYou have exited the script :(\n")
             exit()
         elif choice == "b":
-            print("\nYou have canceled your action.")
+            # print("\nYou have canceled your action.")
             input("\n\033[5mHit enter to continue to the home page:\033[0m ")
             # clear_screen()
             os.system('clear')
