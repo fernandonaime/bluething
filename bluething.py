@@ -1372,7 +1372,7 @@ def scan_system():
     apt_log_file = '/var/log/apt/history.log'
     # Check if APT upgrade has been completed
     try:
-        print("\n=============== APT Upgrade Scan ===============\n")
+        print("\n=============== Advanced Packaging Tool Scan ===============\n")
 
         with open(apt_log_file, 'r') as file:
             content = file.read()
