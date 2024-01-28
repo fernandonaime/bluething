@@ -1912,7 +1912,7 @@ def patches_configure():
 # Services ================================================ Services =========================
 
 def check_service(service_name):
-    result = subprocess.call(f"dpkg -l | grep '^ii  {service_name} ' > /dev/null 2>&1", shell=True)
+    result = subprocess.call(f"dpkg -l | grep '^ii  {service_name} '", shell=True)
     return result == 0
 
 
@@ -1931,7 +1931,7 @@ def purge_service(service_name):
             print(f"Uninstallation of {service_name}...\n")
             line = f"Uninstallation of {service_name}..."
             log_changes(line, "services")
-            os.system(f"apt purge {service_name} > /dev/null 2>&1")
+            os.system(f"apt purge {service_name}")
         else:
             print(f"{service_name} uninstallation bypassed.\n")
             line = f"{service_name} uninstallation bypassed.\n"
