@@ -790,7 +790,6 @@ def ensure_default_deny_policy():
         elif var == 'n' or var == 'no':
             line = "\n\U000026D4DEFAULT-DENY-POLICY: no\U000026D4"
             log_changes(line, "ufw")
-            print("\nexiting port deny policy...")
         elif var is None:
             print("Error: Result is None.")
             return
