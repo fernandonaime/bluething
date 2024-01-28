@@ -363,7 +363,6 @@ def enable_firewall_sequence():
     Please note that once `ufw` is 'enabled', it will not flush the chains when
     adding or removing rules (but will when modifying a rule or changing the default policy).
     By default, `ufw` will prompt when enabling the firewall while running under SSH.
-    
     """, '    '))
     if not is_ufw_enabled():
         print(indent("""
@@ -468,9 +467,9 @@ def ensure_loopback_configured():
 
     |============ Configuring the Loopback Interface =============|
 
-    Loopback traffic is generated between processes on the machine and is typically critical to
-    the operation of the system. The loopback interface is the only place that loopback network
-    (127.0.0.0/8 for IPv4 and ::1/128 for IPv6) traffic should be seen. All other interfaces
+    Loopback traffic is generated between processes on the machine and is typically critical to 
+    the operation of the system. The loopback interface is the only place that loopback network 
+    (127.0.0.0/8 for IPv4 and ::1/128 for IPv6) traffic should be seen. All other interfaces 
     should ignore traffic on this network as an anti-spoofing measure.
     """, '    '))
         if not is_loopback_interface_configured():
