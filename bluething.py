@@ -9,7 +9,6 @@ from contextlib import redirect_stdout
 from datetime import datetime
 from getpass import getpass
 from secrets import compare_digest
-# from shlex import quote as shlex_quote
 import shlex
 from textwrap import indent
 from colorama import Fore
@@ -702,13 +701,12 @@ def input_port_number(script_path):
 
 def ensure_rules_on_ports(script_path):
     print("""
-    \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
+    \033[91m|====== Configuring Firewall Rules for All Open Ports ==========|\033[0m
 
     To reduce the attack surface of a system, 
     all services and ports should be blocked unless required.
     Your configuration will follow this format:
-        ufw allow from 192.168.1.0/24 to any proto tcp port 443
-
+    \x1B[3m ufw allow from 192.168.1.0/24 to any proto tcp port 443 \x1B[0m
     Do you want to continue configuring firewall rules for a port [Y/n]: """)
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
@@ -1409,6 +1407,7 @@ def scan_system():
             print(f"\nPermissions for {file_path}: {access_mode}")
             line = f"\n-Permissions for {file_path}: {access_mode}\n"
             log_changes(line, "patches")
+
 
 def ask_user_scan():
     while True:
