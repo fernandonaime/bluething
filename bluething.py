@@ -1,32 +1,6 @@
 #!usr/bin/python
 
-# he dos2unix tool works by converting the line endings in a text file from the Windows format to the Unix format.
-#
-# Windows uses a pair of the carriage return and line feed characters (\r\n) to represent the end of a line in a text
-# file, while Unix and Linux systems use just the line feed character (\n).
-#
-# When you create or edit a file on Windows and then try to use it on a Unix-based system like Linux, the extra \r
-# characters can cause problems. The shell tries to interpret these \r characters as part of the command, which leads
-# to errors like $'{\r': command not found.
-#
-# The dos2unix tool solves this problem by removing the \r characters, leaving only the \n characters to represent line
-# endings. This makes the file compatible with Unix-based systems.
-#
-# So, when you ran dos2unix on your script, it removed the \r characters that were causing the errors, allowing your
-# script to run correctly.
-
-
 import io
-# The warning “apt does not have a stable CLI interface. Use with caution in scripts.” is displayed when you use apt in
-# a script. This is because apt is designed as an end-user tool and its behavior may change between versions1.
-#
-# The apt command line interface is not considered stable, which means the developers might change how commands work,
-# rename commands, remove commands, or change the output of a command in future versions1. This could potentially break
-# scripts that rely on the current behavior of apt.
-#
-# For scripting purposes, it’s recommended to use apt-get or apt-cache instead, as they have stable command-line
-# interfaces1. These commands are designed to be used in scripts and will maintain backward compatibility as much as
-# possible1.
 import os
 import re
 import subprocess
@@ -58,7 +32,6 @@ current_datetime = ""
 
 
 def banner():
-    # \033[94m blue ansi
     print(indent("""
         |  ____  _              _______ _     _                |
         | |  _ \| |            |__   __| |   (_)               |
@@ -73,26 +46,6 @@ def banner():
           Authors: CB010695, CB010736, CB010830, CB010837   
                         Version: 2.2.3
     """, '    '))
-    # Description:
-    # This script is designed to help you ensure compliance with the
-    # Center for Internet Security (CIS) benchmarks for
-    # Ubuntu Linux 20.04 v2.0.1 - 06-29-2023
-    # It provides options for system scanning and direct configurations,
-    # allowing you to assess and enhance the security posture of your system.
-    #
-    # Features:
-    # - System scanning for CIS benchmarks.
-    # - Direct configurations to address compliance issues.
-    # - Logging of configuration changes and scan results.
-    #
-    # Usage:
-    # 1. Run the script and choose between scanning for compliance or conducting direct configurations.
-    # 2. Select specific benchmarks or services to scan or configure.
-    # 3. Follow the prompts to complete the selected actions.
-    # 4. View logs for a detailed record of configuration changes and scan results.
-    #
-    # Note: Make sure to review the documentation for detailed instructions and best practices.
-    # \033[91m
     input("\nPress Enter to continue...")
 
 
@@ -109,10 +62,6 @@ def login():
     else:
         print("That is the wrong username or password. Try Again")
         exit()
-
-    # # def clear_screen():
-    # #time.sleep(1)
-    # os.system('clear')
 
 
 def y_n_choice():
@@ -478,9 +427,7 @@ def enable_firewall_sequence():
 
 def is_loopback_interface_configured():
     try:
-        # Create a list to store unconfigured rules
         unconfigured_rules = []
-
         # Concatenate rules and statuses into a 2D array
         ufw_rules_and_status = [
             ["ufw allow in on lo", "Anywhere on lo"],
@@ -785,7 +732,6 @@ def ensure_rules_on_ports(script_path):
 
 def is_default_deny_policy():
     # check if to deny policies are Pre-set
-
     return bool(os.system(
         "ufw status verbose | grep 'Default: deny (incoming), deny (outgoing), deny (routed)' >/dev/null 2>&1") == 0)
 
@@ -1721,31 +1667,6 @@ def check_etc_issue_for_patterns():
         print(f"Error: {e}")
 
 
-# Check for patterns in /etc/issue.net
-# def check_etc_issue_net_for_patterns():
-#    try:
-# Get the value of the ID field from /etc/os-release
-#        os_release_id = subprocess.check_output(['grep', '^ID=', '/etc/os-release']).decode('utf-8').split('=')[1].
-#        strip().replace('"', '')
-
-# Construct the pattern
-#        pattern = re.compile(f"(\\\v|\\\r|\\\m|\\\s|{os_release_id})", re.IGNORECASE)
-
-# Open and read /etc/issue.net
-#        with open('/etc/issue.net', 'r') as issue_net_file:
-#            for line in issue_net_file:
-#                if re.search(pattern, line, re.IGNORECASE):
-#                    print (line.strip())
-
-
-#    except FileNotFoundError:
-#        print ("Error: /etc/issue.net not found.")
-#    except subprocess.CalledProcessError as e:
-#        print (f"Error running 'grep' command {e}")
-#    except Exception as e:
-#        print (f"Error: {e}")
-
-
 def get_file_info(file_path):
     if os.path.exists(file_path):
         file_stat = os.stat(file_path)
@@ -2174,3 +2095,55 @@ def main():
 main()
 
 # ============================================ End of Script ======================================
+
+
+
+#notes
+
+# The warning “apt does not have a stable CLI interface. Use with caution in scripts.” is displayed when you use apt in
+# a script. This is because apt is designed as an end-user tool and its behavior may change between versions1.
+#
+# The apt command line interface is not considered stable, which means the developers might change how commands work,
+# rename commands, remove commands, or change the output of a command in future versions1. This could potentially break
+# scripts that rely on the current behavior of apt.
+#
+# For scripting purposes, it’s recommended to use apt-get or apt-cache instead, as they have stable command-line
+# interfaces1. These commands are designed to be used in scripts and will maintain backward compatibility as much as
+# possible1.
+
+
+# he dos2unix tool works by converting the line endings in a text file from the Windows format to the Unix format.
+#
+# Windows uses a pair of the carriage return and line feed characters (\r\n) to represent the end of a line in a text
+# file, while Unix and Linux systems use just the line feed character (\n).
+#
+# When you create or edit a file on Windows and then try to use it on a Unix-based system like Linux, the extra \r
+# characters can cause problems. The shell tries to interpret these \r characters as part of the command, which leads
+# to errors like $'{\r': command not found.
+#
+# The dos2unix tool solves this problem by removing the \r characters, leaving only the \n characters to represent line
+# endings. This makes the file compatible with Unix-based systems.
+#
+# So, when you ran dos2unix on your script, it removed the \r characters that were causing the errors, allowing your
+# script to run correctly.
+
+# Description:
+# This script is designed to help you ensure compliance with the
+# Center for Internet Security (CIS) benchmarks for
+# Ubuntu Linux 20.04 v2.0.1 - 06-29-2023
+# It provides options for system scanning and direct configurations,
+# allowing you to assess and enhance the security posture of your system.
+#
+# Features:
+# - System scanning for CIS benchmarks.
+# - Direct configurations to address compliance issues.
+# - Logging of configuration changes and scan results.
+#
+# Usage:
+# 1. Run the script and choose between scanning for compliance or conducting direct configurations.
+# 2. Select specific benchmarks or services to scan or configure.
+# 3. Follow the prompts to complete the selected actions.
+# 4. View logs for a detailed record of configuration changes and scan results.
+#
+# Note: Make sure to review the documentation for detailed instructions and best practices.
+# \033[91m
