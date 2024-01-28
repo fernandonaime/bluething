@@ -148,13 +148,14 @@ def control_or_date_log():
     try:
         print("""
     \033[91m|======================== Log Generation ========================|\033[0m
+    
     \033[3mFor the above configurations do you want a log by date or by control, hit no to skip\033[0m""")
         choice = y_n_choice().lower()
         if choice == 'y' or choice == 'yes' or choice == '':
             choice = input("""
     Enter your choice as an integer:
-    1) Log by date
-    2) Log by control
+    1: Log by date
+    2: Log by control
 
     Please enter the index of your choice: """)
             choice = int(choice)
