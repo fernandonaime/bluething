@@ -1368,15 +1368,13 @@ file_path_etc_issue_net = '/etc/issue.net'
 
 
 def scan_system():
-    print("\nStarting System Scan...\n")
-    print("\n================ Starting System Scan  ===============\n")
-
+    print("\n=============== System Scan Starting ===============\n")
     # APT upgrade scan
     apt_log_file = '/var/log/apt/history.log'
 
     # Check if APT upgrade has been completed
     try:
-        print("\n=============== APT Upgrade Scan Starting ===============\n")
+        print("\n=============== APT Upgrade Scan ===============\n")
 
         with open(apt_log_file, 'r') as file:
             content = file.read()
@@ -1396,9 +1394,8 @@ def scan_system():
         line = f"\n-Error: Log file {apt_log_file} not found.\n"
         log_changes(line, "patches")
     time.sleep(1)
-    print("\n=============== APT Upgrade Scan Completed ===============\n")
     # Check Permissions for the specific files
-    print("\n=============== File Scan for Permissions Starting ===============\n")
+    print("\n=============== File Scan for Permissions===============\n")
 
     for file_path in [file_path_etc_motd, file_path_etc_issue, file_path_etc_issue_net]:
         if os.path.exists(file_path):
@@ -1409,7 +1406,7 @@ def scan_system():
             line = f"\n-Permissions for {file_path}: {access_mode}\n"
             log_changes(line, "patches")
 
-    print("\n=============== System Scan Completed. Exiting Script  ===============\n")
+    print("\n=============== System Scan Completed===============\n")
 
 
 def ask_user_scan():
