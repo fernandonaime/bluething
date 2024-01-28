@@ -706,7 +706,8 @@ def ensure_rules_on_ports(script_path):
     all services and ports should be blocked unless required.
     Your configuration will follow this format:
     \x1B[3m ufw allow from 192.168.1.0/24 to any proto tcp port 443 \x1B[0m
-    Do you want to continue configuring firewall rules for a port [Y/n]: """, '    '))
+    Do you want to continue configuring firewall rules for a port [Y/n]: 
+    """, '    '))
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
         port_number = input_port_number(script_path)
