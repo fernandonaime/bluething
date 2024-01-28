@@ -538,10 +538,10 @@ def ensure_ufw_outbound_connections():
 
     If rules are not in place for new outbound connections, all packets will be dropped by the
     default policy, preventing network usage.
-
     Do you want to configure your ufw outbound connections if this set of rules are not in place 
     for new outbound connections all packets will be dropped by the default policy preventing network 
-    usage.,""", '    '))
+    usage.,
+    """, '    '))
     if not is_ufw_outbound_connections_configured():
         print("\nAll outbound connections are not configured, do you want to configure them, ")
         var = y_n_choice()
