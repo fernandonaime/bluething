@@ -1838,9 +1838,11 @@ def check_service(service_name):
 
 def scan_service(service_name):
     if check_service(service_name):
+        time.sleep(1)
         print(f"- {service_name} is installed.\U000026D4  Please uninstall it. \U000026D4 \n")
         return True
     else:
+        time.sleep(1)
         print(f"- {service_name} is not installed. No action is needed.\n")
         return False
 
@@ -1876,6 +1878,7 @@ def services_scan():
 
     for service in services_to_check:
         # check_service(service)
+        time.sleep(1)
         scan_service(service)
         # purge_service(service)
 
@@ -1886,6 +1889,7 @@ def services_configure():
     for service in services_to_check:
         # check_service(service)
         # scan_service(service)
+        time.sleep(1)
         purge_service(service)
 
 
