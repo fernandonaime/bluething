@@ -1382,10 +1382,12 @@ def scan_system():
             content = file.read()  # Corrected from file_read() to file.read()
             if 'upgrade' in content:
                 print("\nAPT upgrade activities detected in the log files.\n")
+                time.sleep(1)
                 line = "\n-APT upgrade activities detected in the log files.\n"
                 log_changes(line, "patches")
             else:
                 print("\nNo recent APT upgrade activities detected.\n")
+                time.sleep(1)
                 line = "\n-No recent APT upgrade activities detected.\n"
                 log_changes(line, "patches")
 
@@ -1393,9 +1395,10 @@ def scan_system():
         print(f"\nError: Log file {apt_log_file} not found.\n")
         line = f"\n-Error: Log file {apt_log_file} not found.\n"
         log_changes(line, "patches")
-
+    time.sleep(1)
     print("\n=============== APT Upgrade Scan Completed ===============\n")
-
+    simulate_apt_upgrade()
+    time.sleep(1)
     # Check Permissions for the specific files
     print("\n=============== File Scan for Permissions Starting ===============\n")
 
@@ -1403,6 +1406,7 @@ def scan_system():
         if os.path.exists(file_path):
             file_stat = os.stat(file_path)
             access_mode = stat.filemode(file_stat.st_mode)
+            time.sleep(1)
             print(f"\nPermissions for {file_path}: {access_mode}")
             line = f"\n-Permissions for {file_path}: {access_mode}\n"
             log_changes(line, "patches")
@@ -1448,13 +1452,13 @@ def simulate_apt_upgrade():
         result = subprocess.run(['apt', '-s', 'upgrade'], check=True, capture_output=True, text=True)
         print(result.stdout)
         print("\nAPT simulation upgrade completed.\n")
-        line = "\n-APT simulation upgrade completed.\n"
-        log_changes(line, "patches")
+        # line = "\n-APT simulation upgrade completed.\n"
+        # log_changes(line, "patches")
 
     except subprocess.CalledProcessError:
         print(f"\nError occured during the simulation upgrade.\n")
-        line = "\n-Error has occured during the completion of simulation APT upgrade.\n"
-        log_changes(line, "patches")
+        # line = "\n-Error has occured during the completion of simulation APT upgrade.\n"
+        # log_changes(line, "patches")
 
 
 def run_apt_cache_policy():
@@ -1785,12 +1789,12 @@ def ask_user_to_change_permissions_etc_files():
         print(result)  # Or write to a report file
 
 
-def scan_choice():
-    if ask_user_scan():
-        return False  # Indicates not to continue with the rest of the code
-    else:
-        print("\nScan not initiated.\n")
-        return True  # Continue with the rest of the code
+# def scan_choice():
+#     if ask_user_scan():
+#         return False  # Indicates not to continue with the rest of the code
+#     else:
+#         print("\nScan not initiated.\n")
+#         return True  # Continue with the rest of the code
 
 
 def patches_scan():
