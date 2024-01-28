@@ -1832,7 +1832,7 @@ def patches_configure():
 # Services ================================================ Services =========================
 
 def check_service(service_name):
-    result = subprocess.call(f"dpkg -l | grep '^ii  {service_name} '", shell=True)
+    result = subprocess.call(f"dpkg -l | grep '^ii  {service_name} ' > /dev/null ", shell=True)
     return result == 0
 
 
