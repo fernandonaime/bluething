@@ -12,11 +12,9 @@ from getpass import getpass
 from secrets import compare_digest
 from shlex import quote as shlex_quote
 from textwrap import indent
-
 from colorama import Fore
 from colorama import Style
 from colorama import init as colorama_init
-
 if not os.path.exists('logs'):
     os.makedirs('logs')
 username = "admin"
@@ -2097,8 +2095,7 @@ main()
 # ============================================ End of Script ======================================
 
 
-
-#notes
+# notes
 
 # The warning “apt does not have a stable CLI interface. Use with caution in scripts.” is displayed when you use apt in
 # a script. This is because apt is designed as an end-user tool and its behavior may change between versions1.
