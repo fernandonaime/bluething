@@ -214,13 +214,17 @@ def control_or_date_log():
             if choice == 1:
                 output_filepath = f"logs/{current_date}.log"
                 with open(output_filepath, 'w') as output_file:
-                    for lines in enumerate(log_ufw):
+                    output_file.writelines(f"{'-' * 70}\nUFW Compliance\n{'-' * 70}\n")
+                    for lines in log_ufw:
                         output_file.writelines(f"{str(lines)}\n")
-                    for lines in enumerate(log_services):
+                    output_file.writelines(f"{'-' * 70}\nServices Compliance\n{'-' * 70}\n")
+                    for lines in log_services:
                         output_file.writelines(f"{str(lines)}\n")
-                    for lines in enumerate(log_passwords):
+                    output_file.writelines(f"{'-' * 70}\nPassword Compliance\n{'-' * 70}\n")
+                    for lines in log_passwords:
                         output_file.writelines(f"{str(lines)}\n")
-                    for lines in enumerate(log_patching):
+                    output_file.writelines(f"{'-' * 70}\nPatching Compliance\n{'-' * 70}\n")
+                    for lines in log_patching:
                         output_file.writelines(f"{str(lines)}\n")
                         flag = True
             elif choice == 2:
@@ -306,7 +310,7 @@ def is_ufw_installed():
 def ensure_ufw_installed():
     print(indent("""
 
-    \033[91m|================= Installing Host Firewall ==================|\033[0m
+    |================= Installing Host Firewall ==================|
 
     A firewall utility is required to configure the Linux kernel's netfilter framework via the
     iptables or nftables back-end. The Linux kernel's netfilter framework host-based firewall can
@@ -350,7 +354,7 @@ def is_iptables_persistent_installed():
 def ensure_iptables_persistent_packages_removed():
     print(indent("""
 
-    \033[91m|============== Removing IP-Persistent Tables ================|\033[0m
+    |============== Removing IP-Persistent Tables ================|
 
     Running both `ufw` and the services included in the `iptables-persistent` package may lead
     to conflicts.
@@ -402,7 +406,7 @@ def is_ufw_enabled():
 def enable_firewall_sequence():
     print(indent("""
 
-    \033[91m|======================= Enabling UFW ========================|\033[0m
+    |======================= Enabling UFW ========================|
 
     When running `ufw enable` or starting `ufw` via its initscript, `ufw` will flush its chains.
     This is required so `ufw` can maintain a consistent state, but it may drop existing
@@ -516,7 +520,7 @@ def ensure_loopback_configured():
     try:
         print(indent("""
 
-    \033[91m|============ Configuring the Loopback Interface =============|\033[0m
+    |============ Configuring the Loopback Interface =============|
 
     Loopback traffic is generated between processes on the machine and is typically critical to
     the operation of the system. The loopback interface is the only place that loopback network
@@ -585,7 +589,7 @@ def is_ufw_outbound_connections_configured():
 def ensure_ufw_outbound_connections():
     print(indent("""
 
-    \033[91m|========= Configuring UFW Outbound Connections ==========|\033[0m
+    |========= Configuring UFW Outbound Connections ==========|
 
     If rules are not in place for new outbound connections, all packets will be dropped by the
     default policy, preventing network usage.
@@ -750,7 +754,7 @@ def input_port_number(script_path):
 
 def ensure_rules_on_ports(script_path):
     print(indent("""
-    \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
+    |=== Configuring Firewall Rules for All Open Ports ===|
 
     To reduce the attack surface of a system, all services and ports should be blocked unless required.
     Your configuration will follow this format:
@@ -790,7 +794,7 @@ def ensure_default_deny_policy():
     try:
         print(indent("""
 
-    \033[91m|================= Default Port Deny Policy ==================|\033[0m
+    |================= Default Port Deny Policy ==================|
 
     Any port and protocol not explicitly allowed will be blocked.
     Do you want to configure the default deny policy? [Y/n]: """, '    '))
@@ -852,7 +856,7 @@ def ufw_scan():
     try:
         print(indent("""
 
-    \033[91m|================ Scanning UFW on your system ================|\033[0m""", '    '))
+    |================ Scanning UFW on your system ================|""", '    '))
         # Check if UFW is installed
         # time.sleep(1)
         if is_ufw_installed():
@@ -892,6 +896,8 @@ def ufw_scan():
 
 def ufw_configure():
     try:
+        print(indent("""
+    \033[91m|=================== Configuring UFW Firewall Compliance ===================|\033[0m""", '    '))
         ensure_ufw_installed()
         # time.sleep(1)
         ensure_iptables_persistent_packages_removed()
