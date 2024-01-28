@@ -1004,7 +1004,7 @@ def check_common_password():
         log_changes(line, "pam")
         return False
     else:
-        print("===Password Checking module pam_pwquality.so is NOT enabled.===")
+        print("3- Password Checking module pam_pwquality.so is NOT enabled. ")
         line = "\n3- The Password checking module pam_pwquality.so is NOT enabled for this machine.\n"
         log_changes(line, "pam")
         return True
