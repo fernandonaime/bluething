@@ -1379,7 +1379,7 @@ def scan_system():
         print("\n=============== APT Upgrade Scan Starting ===============\n")
 
         with open(apt_log_file, 'r') as file:
-            content = file.read()  # Corrected from file_read() to file.read()
+            content = file.read()
             if 'upgrade' in content:
                 print("\nAPT upgrade activities detected in the log files.\n")
                 time.sleep(1)
