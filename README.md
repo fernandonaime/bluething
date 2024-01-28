@@ -1,4 +1,4 @@
-# Debian 20.04 Compliance Suite
+# Ubuntu 20.04 Compliance Suite
 
 ## Project Description
 
