@@ -517,7 +517,9 @@ def is_ufw_outbound_connections_configured():
     try:
         result = subprocess.run("ufw status", shell=True, capture_output=True, text=True)
         if "Anywhere on all" in result.stdout:
-            print("The following outbound rule is configured: ufw allow out on all")
+            print(indent("""
+    All outbound connections are configured.
+    """, '    '))
             return True
         else:
             print("\033[91m\U000026D4The following outbound rule is not configured: ufw allow out on all\U000026D4")
