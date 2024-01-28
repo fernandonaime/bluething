@@ -263,10 +263,9 @@ def ensure_ufw_installed():
     |================= Installing Host Firewall ==================|
 
     A firewall utility is required to configure the Linux kernel's netfilter framework via the 
-    iptables or nftables back-end. The Linux kernel's netfilter framework host-based firewall can 
-    protect against threats originating from within a corporate network, including malicious 
+    iptables or nftables back-end. The Linux kernel's netfilter framework host-based firewall 
+    can protect against threats originating from within a corporate network, including malicious 
     mobile code and poorly configured software on a host.
-
     Note: Only one firewall utility should be installed and configured. UFW is dependent on
     the iptables package.
     """, '    '))
