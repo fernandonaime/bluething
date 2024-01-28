@@ -93,7 +93,7 @@ def banner():
     #
     # Note: Make sure to review the documentation for detailed instructions and best practices.
     # \033[91m
-    input("\n \033[5mPress Enter to continue...\033[0m")
+    input("\nPress Enter to continue...")
 
 
 def login():
@@ -226,7 +226,7 @@ def control_or_date_log():
                     output_file.writelines(f"{'-' * 70}\nPatching Compliance\n{'-' * 70}\n")
                     for lines in log_patching:
                         output_file.writelines(f"{str(lines)}\n")
-                        flag = True
+                flag = True
             elif choice == 2:
                 flag = False
                 log_mapping = {
@@ -1766,8 +1766,6 @@ def get_file_info(file_path):
         print(line)
         log_changes(line, "patches")
 
-
-# Assuming 'report_file' is defined somewhere in your code.
 
 file_paths_for_perm_change = [
     '/etc/motd',
