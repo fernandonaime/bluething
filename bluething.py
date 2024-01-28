@@ -657,8 +657,8 @@ def get_ports_as_a_list(script_path):
     script_path = str(script_path)
 
     # Use subprocess.run() instead of os.system()
-    result = subprocess.run(['dos2unix', script_path], capture_output=True, text=True)
-
+    subprocess.run(['dos2unix', script_path])
+    result = subprocess.run(['bash', script_path], capture_output=True, text=True)
     if result.returncode == 0:
         # If the script ran successfully, print the output
         # getting numbers from string
