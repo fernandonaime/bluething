@@ -9,7 +9,8 @@ from contextlib import redirect_stdout
 from datetime import datetime
 from getpass import getpass
 from secrets import compare_digest
-from shlex import quote as shlex_quote
+# from shlex import quote as shlex_quote
+import shlex
 from textwrap import indent
 from colorama import Fore
 from colorama import Style
@@ -703,7 +704,8 @@ def ensure_rules_on_ports(script_path):
     print("""
     \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
 
-    To reduce the attack surface of a system, all services and ports should be blocked unless required.
+    To reduce the attack surface of a system, 
+    all services and ports should be blocked unless required.
     Your configuration will follow this format:
         ufw allow from 192.168.1.0/24 to any proto tcp port 443
 
@@ -715,15 +717,18 @@ def ensure_rules_on_ports(script_path):
         netad = construct_network_address()
         mask = get_validate_address_mask()
         proto = get__validate_protocol()
-        rule = ("ufw " + allow + " from " + netad + "/" + mask + " to any proto " + proto + " port " + str(port_number))
-        line = ("PORT-RULES: \n: " + str(rule))
+        rule = f"ufw {shlex.quote(allow)} from {shlex.quote(netad)}/{shlex.quote(mask)} to any proto {shlex.quote(proto)} port {shlex.quote(str(port_number))}"
+        line = f"PORT-RULES: \n: {rule}"
         log_changes(line, "ufw")
-        os.system(shlex_quote(rule))
+
+        # Refactor to pass command and arguments as a list
+        subprocess.run(shlex.split(rule))
+
         input("\nHit enter to continue [enter]: ")
         ensure_rules_on_ports(script_path)
     elif var == 'n' or var == 'no':
         line = "PORT-RULES: no"
-        log_changes(line)
+        log_changes(line, "ufw")
         print("Skipping firewall rule configuration on ports...")
     elif var is None:
         print("Error: Result is None.")
