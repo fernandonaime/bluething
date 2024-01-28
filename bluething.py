@@ -364,6 +364,7 @@ def enable_firewall_sequence():
     Please note that once `ufw` is 'enabled', it will not flush the chains when
     adding or removing rules (but will when modifying a rule or changing the default policy).
     By default, `ufw` will prompt when enabling the firewall while running under SSH.
+    
     """, '    '))
     if not is_ufw_enabled():
         print(indent("""
@@ -699,14 +700,14 @@ def input_port_number(script_path):
 
 
 def ensure_rules_on_ports(script_path):
-    print(indent("""
-    |=== Configuring Firewall Rules for All Open Ports ===|
+    print("""
+    \033[91m|=== Configuring Firewall Rules for All Open Ports ===|\033[0m
 
     To reduce the attack surface of a system, all services and ports should be blocked unless required.
     Your configuration will follow this format:
         ufw allow from 192.168.1.0/24 to any proto tcp port 443
 
-    Do you want to continue configuring firewall rules for a port [Y/n]: """, '    '))
+    Do you want to continue configuring firewall rules for a port [Y/n]: """)
     var = y_n_choice()
     if var == 'y' or var == 'yes' or var == '':
         port_number = input_port_number(script_path)
@@ -715,14 +716,14 @@ def ensure_rules_on_ports(script_path):
         mask = get_validate_address_mask()
         proto = get__validate_protocol()
         rule = ("ufw " + allow + " from " + netad + "/" + mask + " to any proto " + proto + " port " + str(port_number))
-        line = ("\nPORT-RULES: \n: " + str(rule))
+        line = ("PORT-RULES: \n: " + str(rule))
         log_changes(line, "ufw")
         os.system(shlex_quote(rule))
-        input("\n\033[5mHit enter to continue:\033[0m: ")
+        input("\nHit enter to continue [enter]: ")
         ensure_rules_on_ports(script_path)
     elif var == 'n' or var == 'no':
-        line = "\nPORT-RULES: no"
-        log_changes(line, "ufw")
+        line = "PORT-RULES: no"
+        log_changes(line)
         print("Skipping firewall rule configuration on ports...")
     elif var is None:
         print("Error: Result is None.")
