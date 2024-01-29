@@ -129,7 +129,7 @@ def log_category(control):
             log_file.write(f"-----------------------------------------------------------------------\n")
             for line in log_services:
                 log_file.write(f"{line}")
-        elif control == "passwords":
+        elif control == "pam":
             log_file.write(f"-----------------------------------------------------------------------\n")
             log_file.write(f"                           PASSWORD CONFIGURATIONS                          \n")
             log_file.write(f"-----------------------------------------------------------------------\n")
